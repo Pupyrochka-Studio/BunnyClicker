@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script>
+window.__errs=[];window.onerror=function(m,u,l){window.__errs.push(m+" (строка "+l+")")};
+window.addEventListener("load",function(){var miss=(typeof IMG==="undefined"||IMG.length<15);if(window.__ok&&!miss)return;var d=document.createElement("div");
+d.style.cssText="position:fixed;left:8px;right:8px;top:8px;z-index:99;background:#7f1d1d;color:#fff;padding:12px;border-radius:12px;font:14px system-ui,sans-serif";
+d.textContent=window.__ok?"⚠️ Не загрузились картинки: проверь, что в репозитории лежат images1.js, images2.js и images3.js целиком (не обрезанные).":"⚠️ Игра не запустилась. "+(window.__errs.length?"Ошибка: "+window.__errs.join("; "):"Файл index.html на GitHub загружен не полностью (нет конца скрипта). Загрузи его заново.");
+document.body.appendChild(d)});
+</script>
+<script src="images1.js"></script>
+<script src="images2.js"></script>
+<script src="images3.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Кроличий кликер</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#14091f">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff4e2;--card:#fffdf9;--ink:#3a2412;--mut:#8c735b;--acc:#ff7a1f;--acc2:#ffb03a;--ok:#2fa84f;--line:#f0d9b8;--glow:rgba(255,176,58,.55);--sh:0 6px 18px rgba(140,90,30,.13);
+--bgx:radial-gradient(circle at 12% 0,#ffd9a077,transparent 40%),radial-gradient(circle at 100% 25%,#ffe3b877,transparent 42%);
+--r0:#9aa5b1;--r1:#3b82f6;--r2:#a855f7;--r3:#f59e0b;--r4:#14e0c8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#17120d;--card:#241c14;--ink:#f8ead8;--mut:#b09a82;--line:#3a2d1f;--sh:0 6px 18px rgba(0,0,0,.45);--bgx:radial-gradient(circle at 15% 0,#5a3a1a55,transparent 45%)}}
+:root[data-h="1"]{--bg:#12071d;--card:#22123a;--ink:#f7eaff;--mut:#bba3d8;--acc:#ff7a1a;--acc2:#ffae45;--line:#432962;--ok:#7ddc4a;--glow:rgba(255,106,20,.5);--sh:0 6px 22px rgba(0,0,0,.5);
+--bgx:radial-gradient(circle at 80% -5%,#ffb34733 0,transparent 22%),radial-gradient(ellipse at top,#4a1d70 0,transparent 65%),radial-gradient(ellipse at bottom,#2a0f3d 0,transparent 55%)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0 auto;max-width:560px;padding:12px 12px 104px;color:var(--ink);font-family:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-weight:600;background:var(--bgx),var(--bg);background-attachment:fixed}
+button{font:inherit;color:inherit;touch-action:manipulation}
+input{font-family:inherit}
+.top{position:relative;text-align:center;padding:54px 14px 12px;background:linear-gradient(160deg,var(--card),color-mix(in srgb,var(--acc2) 15%,var(--card)));border:1px solid var(--line);border-radius:26px;box-shadow:var(--sh)}
+#mute,#theme,#music,#uname,#admbtn{position:absolute;top:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,.08);cursor:pointer;font-weight:800}
+#admbtn{right:148px;font-size:1.15rem;padding:5px 10px}
+#music{right:56px;font-size:1.15rem;padding:5px 10px}
+#mute{right:10px;font-size:1.15rem;padding:5px 10px}#theme{right:102px;font-size:1.15rem;padding:5px 10px}
+#uname{left:10px;font-size:.85rem;padding:8px 12px;max-width:calc(100% - 205px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.money{font-size:2.6rem;font-weight:900;line-height:1.1;text-shadow:0 2px 0 color-mix(in srgb,var(--acc2) 55%,transparent)}
+.stats{color:var(--mut);font-size:.88rem;font-weight:700;margin-top:4px}.stats b{color:var(--ink)}
+.gems{display:inline-block;background:color-mix(in srgb,var(--ok) 18%,var(--card));color:var(--ok);padding:1px 10px;border-radius:99px;font-weight:900}
+#bonus{font-size:.76rem;opacity:.9}
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(536px,calc(100% - 24px));display:flex;gap:6px;padding:6px;margin:0;background:color-mix(in srgb,var(--card) 84%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.22);z-index:5}
+.tabs button{flex:1;padding:11px 2px;border-radius:18px;border:0;background:transparent;font-weight:900;font-size:.9rem;color:var(--mut);cursor:pointer;transition:.15s}
+.tabs button.on{background:linear-gradient(180deg,var(--acc2),var(--acc));color:#fff;box-shadow:0 4px 12px var(--glow)}
+.dot{color:#ef4444}
+.stage{position:relative;height:290px;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none}
+.stage::before{content:"";position:absolute;width:290px;height:290px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 66%)}
+.stage::after{content:"";position:absolute;bottom:22px;width:170px;height:22px;border-radius:50%;background:rgba(0,0,0,.2);filter:blur(6px)}
+#rabbit{position:relative;z-index:1;font-size:150px;line-height:1;background:none;border:0;cursor:pointer;transition:transform .08s;filter:drop-shadow(0 10px 10px rgba(0,0,0,.18))}
+#rabbit:active,#rabbit.pop{transform:scale(.92) rotate(-2deg)}
+#rabbit .face img{height:240px;width:240px;object-fit:contain;display:block;pointer-events:none;-webkit-user-drag:none;animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-9px)}}
+.face{display:inline-block}
+.rainbow{animation:rb 3s linear infinite}@keyframes rb{to{filter:hue-rotate(360deg)}}
+.ghost{opacity:.65;filter:drop-shadow(0 0 12px #fff)}
+.glow{animation:gl 1.6s ease-in-out infinite alternate}@keyframes gl{from{filter:drop-shadow(0 0 4px gold)}to{filter:drop-shadow(0 0 18px gold)}}
+.th{height:1.15em;width:1.15em;object-fit:contain;vertical-align:middle}
+.title{display:table;margin:0 auto;padding:5px 16px;background:linear-gradient(180deg,var(--acc2),var(--acc));color:#fff;border-radius:99px;font-weight:900;font-size:.92rem;box-shadow:0 4px 12px var(--glow);text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.bar{height:9px;margin:9px 14px 0;background:color-mix(in srgb,var(--line) 80%,transparent);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc2),var(--acc));border-radius:99px;transition:width .3s}
+.float{position:absolute;font-weight:900;color:#fff;pointer-events:none;animation:up .9s ease-out forwards;font-size:1.7rem;z-index:3;text-shadow:0 2px 0 var(--acc),0 0 10px var(--acc),0 0 2px #000}
+@keyframes up{to{transform:translateY(-90px) scale(1.2);opacity:0}}
+h2{display:flex;align-items:center;gap:8px;font-size:1.05rem;font-weight:900;margin:22px 4px 8px;color:var(--ink)}
+h2::before{content:"";width:5px;height:1.1em;border-radius:4px;background:linear-gradient(var(--acc2),var(--acc))}
+.up{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:11px 12px;margin-bottom:9px;cursor:pointer;box-shadow:var(--sh);transition:transform .1s,box-shadow .15s}
+.up:active{transform:scale(.98)}
+.up .ic{display:grid;place-items:center;flex:0 0 52px;height:52px;font-size:1.8rem;border-radius:16px;background:linear-gradient(145deg,color-mix(in srgb,var(--acc2) 35%,var(--card)),color-mix(in srgb,var(--acc) 18%,var(--card)))}
+.up .tx{flex:1;min-width:0}.up b{display:block;font-weight:900}.up small{color:var(--mut);font-weight:700}
+.up .pr{font-weight:900;white-space:nowrap;padding:8px 12px;border-radius:14px;background:color-mix(in srgb,var(--line) 70%,var(--card))}
+.up.no{opacity:.6;cursor:not-allowed}
+.up.can{border-color:var(--ok);box-shadow:0 0 0 2px color-mix(in srgb,var(--ok) 25%,transparent),var(--sh)}
+.up.can .pr{background:var(--ok);color:#fff}
+.candy{background:color-mix(in srgb,#c026d3 20%,var(--card));color:#d946ef}
+@keyframes shake{25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}.shake{display:inline-block;animation:shake .35s infinite}
+.tc{border:2px solid var(--line);border-radius:16px;padding:8px 4px;text-align:center;font-size:.72rem;font-weight:800;cursor:pointer;background:var(--card)}
+.tc i{display:block;height:38px;border-radius:10px;margin-bottom:5px}.tc.lk{opacity:.45;cursor:default}.tc.on{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok)}
+.gold{position:absolute;z-index:4;font-size:46px;background:none;border:0;cursor:pointer;animation:gp .7s ease-in-out infinite alternate;filter:drop-shadow(0 0 14px gold)}@keyframes gp{to{transform:scale(1.25) rotate(8deg)}}
+.sbig{font-size:110px;line-height:1.1;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))}
+.ir{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.ir span{color:var(--mut);font-weight:700}.ir b{text-align:right;font-weight:800}.ir small{color:var(--mut);font-weight:700}
+.sw{display:inline-block;width:14px;height:14px;border-radius:5px;vertical-align:middle;margin-right:6px;border:1px solid var(--line)}
+.pr s{opacity:.6;margin-right:4px;font-weight:700}
+.note{color:var(--mut);font-size:.84rem;margin:2px 4px 10px;font-weight:700}
+.pack{background:linear-gradient(135deg,var(--card),color-mix(in srgb,var(--acc2) 18%,var(--card)));border-color:color-mix(in srgb,var(--acc2) 60%,var(--line))}
+.pack .pr{background:linear-gradient(180deg,var(--acc2),var(--acc));color:#fff}
+.tag{background:linear-gradient(180deg,#ff5d5d,#d62828);color:#fff;border-radius:99px;padding:2px 9px;font-size:.66rem;margin-left:6px;vertical-align:middle;font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.d4{grid-template-columns:repeat(4,1fr)}
+.r0{--rc:var(--r0)}.r1{--rc:var(--r1)}.r2{--rc:var(--r2)}.r3{--rc:var(--r3)}.r4{--rc:var(--r4)}
+.sk{border:2px solid var(--rc,var(--line));background:linear-gradient(165deg,var(--card),color-mix(in srgb,var(--rc,#888) 22%,var(--card)));border-radius:18px;padding:10px 4px;text-align:center;cursor:pointer;font-size:2.4rem;line-height:1.2;box-shadow:var(--sh)}
+.sk small{display:block;font-size:.7rem;color:var(--mut);font-weight:800}
+.sk.r3{animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 16px var(--r3)}}
+.sk.r4{animation:ex 3s linear infinite}@keyframes ex{0%,100%{border-color:#14e0c8;box-shadow:0 0 14px #14e0c8}50%{border-color:#a855f7;box-shadow:0 0 14px #a855f7}}
+.sk.lock{opacity:.6;cursor:default;filter:grayscale(1);animation:none}
+.sk.eq{box-shadow:0 0 0 3px var(--ok),0 0 16px color-mix(in srgb,var(--ok) 50%,transparent)}
+.day{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:10px 4px;text-align:center;font-size:1.4rem;line-height:1.3;font-weight:900;box-shadow:var(--sh)}
+.day small{display:block;font-size:.72rem;color:var(--mut);font-weight:800}
+.day.done{opacity:.45;filter:grayscale(.6)}.day.now{border-color:var(--acc);box-shadow:0 0 0 3px var(--glow),var(--sh)}.day.big{grid-column:span 2}
+.claim{width:100%;margin-top:12px;padding:14px;border-radius:18px;border:0;background:linear-gradient(180deg,#46c36b,var(--ok));color:#fff;font-weight:900;font-size:1.05rem;cursor:pointer;box-shadow:0 6px 16px color-mix(in srgb,var(--ok) 40%,transparent)}
+.claim:disabled{background:var(--line);color:var(--mut);box-shadow:none;cursor:default}
+#pin{flex:1;min-width:0;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:700}
+.reset{margin:22px auto 8px;display:block;background:none;border:1px dashed var(--line);color:var(--mut);border-radius:14px;padding:9px 14px;font-weight:700}
+#modal,#pay,#accm,#adm,#thm,#skm{position:fixed;inset:0;background:rgba(10,5,20,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.box{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:18px;width:100%;max-width:520px;max-height:100%;overflow:auto;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .25s ease-out}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+.win{position:relative;overflow:hidden;height:136px;border-radius:16px;background:color-mix(in srgb,var(--bg) 70%,var(--card));border:1px solid var(--line);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.win::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:4px;background:#ef4444;box-shadow:0 0 12px #ef4444;transform:translateX(-50%);z-index:2;border-radius:4px}
+#strip{display:flex;height:100%;will-change:transform}
+.it{flex:0 0 96px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:48px;border-bottom:6px solid}
+.it small{font-size:.65rem;color:var(--mut);font-weight:800}
+#res{min-height:130px;font-size:1.05rem}#res .big{font-size:84px;line-height:1.1;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))}
+.btns{display:flex;gap:8px;margin-top:10px}
+.btns button{flex:1;padding:12px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,var(--acc2),var(--acc));color:#fff;font-weight:900;cursor:pointer;box-shadow:0 4px 12px var(--glow)}
+.btns button.g{background:var(--card);color:var(--ink);box-shadow:none}
+#toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translateX(-50%) translateY(-8px);background:rgba(25,18,12,.92);color:#fff;padding:11px 16px;border-radius:99px;font-size:.9rem;font-weight:800;opacity:0;pointer-events:none;transition:.25s;z-index:20;max-width:92%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#toast.on{opacity:1;transform:translateX(-50%)}
+.pay label{display:block;font-size:.8rem;color:var(--mut);margin:8px 0 3px;font-weight:800}
+.pay input,.pay select{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:1rem;font-weight:700}
+.row2{display:flex;gap:8px}.row2>div{flex:1}
+.card{position:relative;background:linear-gradient(135deg,#ff9a3d,#c2410c 70%,#7c2d12);color:#fff;border-radius:18px;padding:14px;margin:8px 0;font-size:.95rem;letter-spacing:.06em;box-shadow:0 8px 20px rgba(194,65,12,.35)}
+.card::after{content:"";position:absolute;right:14px;top:14px;width:36px;height:27px;border-radius:6px;background:linear-gradient(135deg,#ffe29a,#d4a537)}
+.cf{position:fixed;font-size:24px;pointer-events:none;z-index:30;animation:cf 1.2s ease-out forwards}
+@keyframes cf{from{transform:translate(0,0) scale(.6);opacity:1}to{transform:translate(var(--dx),var(--dy)) rotate(360deg) scale(1.1);opacity:0}}
+#hdeco{display:none;position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:-1}
+#hdeco span{position:absolute;top:-40px;font-size:30px;opacity:.4;animation:fall 14s linear infinite}
+@keyframes fall{to{transform:translateY(110vh) rotate(40deg)}}
+:root[data-d="1"] #hdeco{display:block}
+:root[data-h="1"] .top{background:linear-gradient(160deg,#2a1647,#3a1a5c 60%,#4a1f2a)}
+:root[data-h="1"] .money{text-shadow:0 0 16px #ff7a1acc}
+:root[data-h="1"] .up,:root[data-h="1"] .sk,:root[data-h="1"] .day{border-color:color-mix(in srgb,#a45bff 45%,var(--line))}
+:root[data-h="1"] .stage::after{background:rgba(0,0,0,.5)}
+</style>
+</head>
+<body>
+<div id="hdeco"></div>
+<div class="top">
+  <button id="uname">👤 Гость</button><button id="admbtn" style="display:none">🛠</button><button id="theme">🎨</button><button id="music">🎵</button><button id="mute" aria-label="Звук">🔊</button>
+  <div class="money">🥕 <span id="money">0</span></div>
+  <div class="stats">За клик: <b id="cpc">1</b> · В секунду: <b id="cps">0</b> · <span class="gems">🥬 <span id="gems">0</span></span> <span class="gems candy">🍬 <span id="candy">0</span></span></div>
+  <div class="stats" id="bonus"></div>
+  <div class="stats" id="boost"></div>
+</div>
+<div class="tabs"><button id="t1" class="on">🐰 Кликер</button><button id="t2">🎁 Магазин</button><button id="t3">📅 Награды<span class="dot" id="dot"></span></button></div>
+
+<div id="pg1">
+  <div class="stage" id="stage"><button id="rabbit" aria-label="Кролик"><span class="face" id="face">🐰</span></button></div>
+  <div class="title" id="title"></div>
+  <div class="bar"><i id="barfill"></i></div>
+  <h2>Улучшения кликов</h2><div id="clickUps"></div>
+  <h2>Доход в секунду</h2><div id="autoUps"></div>
+  <h2>🧿 Артефакты</h2><div class="note">Покупаются один раз и действуют навсегда. Те, что за 🥬, не пропадают при сбросе.</div><div id="arts"></div>
+  <button class="reset" id="reset">Сбросить прогресс (🥕 500M + 🥬 500)</button>
+  <div class="note" id="rnote" style="text-align:center"></div>
+</div>
+
+<div id="pg2" style="display:none">
+  <h2>👑 VIP</h2>
+  <div class="note" id="vipnote"></div><div id="vip"></div>
+  <h2>💻 Техно-паки</h2>
+  <div class="note">Эксклюзивные скины (+75% к доходу), капуста, морковь и VIP. Оплата фейковая.</div>
+  <div id="tpacks"></div>
+  <h2>🎃 Хэллоуин-паки</h2>
+  <div class="note">Набор: капуста + морковь + эксклюзивные скины. Оплата фейковая.</div>
+  <div id="hpacks"></div>
+  <h2>🍬 Конфетная лавка</h2>
+  <div class="note">Хэллоуинские приколюхи за конфеты.</div><div id="clavka"></div>
+  <h2>🍭 Конфетные кейсы</h2>
+  <div class="note">Открываются за 🥬, а выпадают только конфеты.</div><div id="ccases"></div>
+  <h2>🍬 Купить конфеты</h2><div id="cpacksc"></div>
+  <h2>🥬 Донат капустой (понарошку)</h2>
+  <div class="note">Это шуточный донат: платёж фейковый, реальные деньги не списываются, капуста бесплатная.</div>
+  <div id="packs"></div>
+  <h2>🥕 Купить морковь</h2>
+  <div class="note">За капусту или картой (понарошку). Размер набора зависит от твоего дохода.</div>
+  <div id="xch"></div><div id="cpacks"></div>
+  <h2>🎟️ Промокод</h2>
+  <div class="row2"><input id="pin" placeholder="Введи промокод" autocomplete="off"><button id="pbtn" class="claim" style="width:auto;margin:0;padding:0 18px">OK</button></div>
+  <h2>Кейсы</h2><div id="cases"></div>
+  <h2>Коллекция скинов <span id="colc"></span></h2>
+  <div class="note">Нажми на скин, чтобы осмотреть его: характеристики, тема, где получить. Скины дают бонус к доходу. Дубликаты возвращают 🥬.</div>
+  <div class="grid" id="inv"></div>
+</div>
+
+<div id="pg3" style="display:none">
+  <h2>📅 Ежедневные награды</h2>
+  <div class="note">Заходи каждый день, чтобы не потерять серию. Пропустишь день: серия начнётся заново.</div>
+  <div class="grid d4" id="days"></div>
+  <button class="claim" id="claim">Забрать награду</button>
+  <div class="note" id="dnote" style="text-align:center;margin-top:8px"></div>
+  <h2>🏆 Достижения</h2><div id="achs"></div>
+</div>
+
+<div id="modal"><div class="box">
+  <div id="roll"><div class="win"><div id="strip"></div></div><div class="note" id="rollTxt">Открываем кейс…</div></div>
+  <div id="res" style="display:none"></div>
+  <div class="btns" id="mbtns" style="display:none"><button id="mEq">Надеть</button><button class="g" id="mClose">Закрыть</button></div>
+</div></div>
+<div id="pay"><div class="box pay" style="text-align:left">
+  <h3 id="payTitle" style="margin:0 0 4px"></h3>
+  <div class="note">🧪 Это игровая оплата: деньги не списываются. Не вводи настоящие данные карты, подойдут любые выдуманные. Ничего не сохраняется и не отправляется.</div>
+  <div class="card"><b>Тестовая карта</b><br><span id="cprev">•••• •••• •••• ••••</span></div>
+  <label>Номер карты</label><input id="cn" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" autocomplete="off">
+  <div class="row2"><div><label>Срок</label><input id="ce" inputmode="numeric" maxlength="5" placeholder="ММ/ГГ" autocomplete="off"></div>
+  <div><label>CVC</label><input id="cc" inputmode="numeric" maxlength="3" placeholder="123" autocomplete="off"></div></div>
+  <label>Имя на карте</label><input id="cname" placeholder="BUNNY RABBITOV" autocomplete="off">
+  <div class="btns"><button class="g" id="payFill">Заполнить тестовыми</button><button id="payBtn">Оплатить 0 ₽</button></div>
+  <div class="btns" style="margin-top:6px"><button class="g" id="payCancel">Отмена</button></div>
+</div></div>
+<div id="accm"><div class="box pay" style="text-align:left">
+  <h3 style="margin:0 0 4px">👤 Аккаунт</h3>
+  <div class="note" id="astat"></div>
+  <div class="note">Аккаунты хранятся только в этом браузере, не на сервере. Не используй настоящий пароль.</div>
+  <label>Ник</label><input id="an" maxlength="16" autocomplete="off">
+  <label>Пароль</label><input id="ap" type="password" maxlength="32" autocomplete="off">
+  <div class="btns"><button id="aIn">Войти</button><button id="aReg">Создать</button></div>
+  <div class="btns" style="margin-top:6px"><button class="g" id="aGuest">Играть гостем</button><button class="g" id="aClose">Закрыть</button></div>
+</div></div>
+<div id="adm"><div class="box pay" style="text-align:left">
+  <h3 style="margin:0 0 4px">🛠 Админ-панель</h3>
+  <label>Количество (например 1000000, 5M, 2.5B, 1e9)</label><input id="admN" value="1000000" autocomplete="off">
+  <div class="btns"><button id="admC">Set Carrot</button><button id="admG">Set Cabbage</button><button id="admY">Set Candy</button></div>
+  <label>Скин</label><select id="admS"></select>
+  <label>Игрок</label><select id="admP"></select>
+  <div class="btns"><button id="admSk">Give Skin</button></div>
+  <label>Кейс (бесплатно)</label><select id="admK"></select>
+  <div class="btns"><button id="admO">Open Case</button></div>
+  <div class="btns"><button class="g" id="admX">Закрыть</button></div>
+</div></div>
+<div id="thm"><div class="box" style="text-align:left">
+  <h3 style="margin:0 0 4px">🎨 Темы</h3>
+  <div class="note">Каждый скин открывает свою тему. Тема меняет цвета, фон и музыку.</div>
+  <div class="grid" id="thgrid"></div>
+  <div class="btns"><button class="g" id="thx">Закрыть</button></div>
+</div></div>
+<div id="skm"><div class="box">
+  <div class="sbig" id="skbig"></div>
+  <h3 id="skn" style="margin:4px 0 8px"></h3>
+  <div id="skinfo" style="text-align:left"></div>
+  <div class="btns" id="skbtns"></div>
+</div></div>
+<div id="toast"></div>
+
+<script>
+var IMG=(typeof IMG!=="undefined"&&IMG)||[];
+var CLICK=[
+ {id:"c1",ic:"🐾",n:"Сильные лапки",v:1,b:15,m:1.15},
+ {id:"c2",ic:"🥕",n:"Золотая морковка",v:5,b:150,m:1.17},
+ {id:"c3",ic:"💪",n:"Кроличий протеин",v:25,b:1500,m:1.18},
+ {id:"c4",ic:"🚀",n:"Космо-кролик",v:200,b:15000,m:1.2},
+ {id:"c5",ic:"⚡",n:"Электро-лапки",v:1000,b:150000,m:1.2},
+ {id:"c6",ic:"🔮",n:"Магия кролика",v:6000,b:1.5e6,m:1.21},
+ {id:"c7",ic:"🌌",n:"Галактический клик",v:40000,b:2e7,m:1.22},
+ {id:"c8",ic:"💎",n:"Кристальные когти",v:250000,b:3e8,m:1.22},
+ {id:"c9",ic:"⚛️",n:"Квантовая лапа",v:2e6,b:4e9,m:1.23},
+ {id:"c10",ic:"🕳️",n:"Тёмная материя",v:2e7,b:6e10,m:1.24},
+ {id:"c11",ic:"☄️",n:"Божественный щелчок",v:3e8,b:1e12,m:1.25}
+];
+var AUTO=[
+ {id:"a1",ic:"🌱",n:"Грядка моркови",v:1,b:50,m:1.15},
+ {id:"a2",ic:"🕳️",n:"Кроличья нора",v:8,b:400,m:1.16},
+ {id:"a3",ic:"🚜",n:"Ферма",v:50,b:3000,m:1.17},
+ {id:"a4",ic:"💼",n:"Кролик-бизнесмен",v:300,b:20000,m:1.18},
+ {id:"a5",ic:"🏢",n:"Кроличья корпорация",v:2000,b:150000,m:1.2},
+ {id:"a6",ic:"🏭",n:"Морковный завод",v:12000,b:1.2e6,m:1.19},
+ {id:"a7",ic:"🛰️",n:"Орбитальная ферма",v:80000,b:1e7,m:1.2},
+ {id:"a8",ic:"🧪",n:"Лаборатория моркови",v:500000,b:8e7,m:1.2},
+ {id:"a9",ic:"🌍",n:"Планета кроликов",v:4e6,b:6e8,m:1.21},
+ {id:"a10",ic:"🏙️",n:"Кроличий город",v:3e7,b:5e9,m:1.22},
+ {id:"a11",ic:"🌀",n:"Портал в морковный мир",v:3e8,b:6e10,m:1.23},
+ {id:"a12",ic:"🌠",n:"Звёздная система",v:3e9,b:8e11,m:1.24},
+ {id:"a13",ic:"🪐",n:"Галактика кроликов",v:4e10,b:1e13,m:1.25}
+];
+var RANKS=[[1,"Малыш",0],[5,"Подросток",0],[12,"Крутой кролик",1],[25,"Кролик-босс",3],[45,"Король кроликов",2],[80,"Император кроликов",2],[120,"Бессмертный кролик",2]];
+var RAR=[{n:"Обычный",b:0,back:20},{n:"Редкий",b:.1,back:60},{n:"Эпический",b:.25,back:160},{n:"Легендарный",b:.5,back:500},{n:"Эксклюзив",b:.75,back:1500}];
+var SK=[
+ {id:0,n:"Классика",e:"🐰",r:0,f:""},
+ {id:1,n:"Пепел",e:"🐇",r:0,f:"grayscale(1)"},
+ {id:2,n:"Синька",e:"🐰",r:0,f:"hue-rotate(190deg)"},
+ {id:3,n:"Мятный",e:"🐇",r:0,f:"hue-rotate(90deg)"},
+ {id:4,n:"Розовый",e:"🐰",r:1,f:"hue-rotate(300deg) saturate(1.6)"},
+ {id:5,n:"Золотой",e:"🐰",r:1,f:"sepia(1) saturate(5) hue-rotate(-15deg)"},
+ {id:6,n:"Ниндзя-кролик",e:"🐰",r:1,img:10},
+ {id:7,n:"Радужный",e:"🐰",r:2,c:"rainbow"},
+ {id:8,n:"Кролик-призрак",e:"🐰",r:2,c:"ghost",img:13},
+ {id:9,n:"Кибер-кролик",e:"🐰",r:2,t:"c",img:9},
+ {id:10,n:"Дракон",e:"🐲",r:3,c:"glow"},
+ {id:11,n:"Единорог",e:"🦄",r:3,c:"glow"},
+ {id:12,n:"Лесной",e:"🐇",r:0,f:"hue-rotate(60deg)",t:"f"},
+ {id:13,n:"Закат",e:"🐰",r:0,f:"hue-rotate(-30deg) saturate(1.6)"},
+ {id:14,n:"Шоколад",e:"🐇",r:0,f:"sepia(1) brightness(.6)",t:"f"},
+ {id:15,n:"Лимонный",e:"🐰",r:0,f:"hue-rotate(40deg) saturate(2.2)"},
+ {id:16,n:"Лисёнок",e:"🦊",r:1,t:"f"},
+ {id:17,n:"Панда",e:"🐼",r:1,t:"f"},
+ {id:18,n:"Мишка",e:"🐻",r:1,t:"f"},
+ {id:19,n:"Ледяной",e:"🐇",r:1,f:"hue-rotate(160deg) brightness(1.3) saturate(.7)"},
+ {id:20,n:"Робокролик",e:"🤖",r:2,t:"c"},
+ {id:21,n:"Космонавт",e:"🧑‍🚀",r:2,t:"s"},
+ {id:22,n:"Пришелец-кролик",e:"🐰",r:2,t:"s",img:4},
+ {id:23,n:"Огненный",e:"🐰",r:2,f:"saturate(3) hue-rotate(-40deg)",c:"glow"},
+ {id:24,n:"НЛО-кролик",e:"🐰",r:3,c:"glow",t:"s",img:5},
+ {id:25,n:"Золотой дракон",e:"🐉",r:3,f:"sepia(1) saturate(5) hue-rotate(-15deg)",c:"glow"},
+ {id:26,n:"Лев",e:"🦁",r:3,c:"glow",t:"f"},
+ {id:27,n:"Кибер-дракон",e:"🐲",r:3,f:"invert(1) hue-rotate(160deg)",c:"glow",t:"c"},
+ {id:28,n:"Тыквенный",e:"🎃",r:4,c:"rainbow",t:"h",ex:1},
+ {id:29,n:"Новогодний кролик",e:"🐰",r:3,c:"glow",pr:1,img:6},
+ {id:30,n:"VIP-король",e:"🤴",r:3,c:"glow",pr:1},
+ {id:31,n:"Вампир-кролик",e:"🐰",r:4,c:"glow",t:"h",ex:1,img:7},
+ {id:32,n:"Летучая мышь",e:"🦇",r:4,t:"h",ex:1},
+ {id:33,n:"Скелет",e:"💀",r:1,t:"h",ex:1},
+ {id:34,n:"Зомби-кролик",e:"🐰",r:2,t:"h",ex:1,img:11},
+ {id:35,n:"Паук",e:"🕷️",r:1,t:"h",ex:1},
+ {id:36,n:"Ведьма-кролик",e:"🐰",r:2,t:"h",ex:1,img:12},
+ {id:37,n:"Хэллоуин-дракон",e:"🐉",r:3,f:"hue-rotate(250deg) saturate(1.5)",c:"glow",t:"h",ex:1},
+ {id:38,n:"Кролик-программист",e:"🐰",r:4,ex:1,t:"t",img:8,c:"glow"},
+ {id:39,n:"Неон-хакер",e:"🐰",r:4,ex:1,t:"t",f:"invert(1) hue-rotate(100deg) saturate(2)",c:"glow"},
+ {id:40,n:"Кролик-космонавт",e:"🐰",r:3,t:"s",img:14,c:"glow"}
+];
+/* скины без картинки отключены (индексы не сдвигаем) */
+[10,11,16,17,18,20,21,25,26,27,28,30,32,33,35,37].forEach(function(i){SK[i].off=1});
+var CASES=[
+ {n:"Обычный кейс",ic:"📦",p:100,w:[70,25,4.5,.5]},
+ {n:"Редкий кейс",ic:"🎁",p:250,w:[30,50,17,3]},
+ {n:"Кибер-кейс",ic:"🤖",p:450,w:[10,50,32,8],t:"c",d:"шанс на Кибер-кролика"},
+ {n:"Золотой кейс",ic:"👑",p:600,w:[0,40,45,15]},
+ {n:"Космо-кейс",ic:"🚀",p:900,w:[0,20,55,25],t:"s",d:"Пришелец, НЛО-кролик, Кролик-космонавт"},
+ {n:"Хэллоуин-кейс",ic:"🎃",p:400,w:[0,0,100,0],t:"h",d:"Ведьма-кролик или Зомби-кролик"},
+ {n:"Легендарный кейс",ic:"🏆",p:2000,w:[0,0,50,50]},
+ {n:"Копилка",ic:"🧧",p:30,w:[85,14,1,0],d:"дёшево и весело"},
+ {n:"Эпик-кейс",ic:"🔮",p:1200,w:[0,0,100,0],d:"гарантированно эпик"}
+];
+var PACKS=[{g:100,rub:99},{g:550,rub:449},{g:1200,rub:899},{g:2600,rub:1790,t:"ХИТ"},{g:7000,rub:4490,t:"ВЫГОДНО"}];
+var XCH=[{g:10,k:1},{g:45,k:5},{g:160,k:20}];
+var CP=[{k:2,rub:49},{k:12,rub:249,t:"ХИТ"},{k:60,rub:999}];
+var PROMOS={KROLIK:{g:100},MORKOVKA:{c:3},KAPUSTA:{g:300},BUNNY:{c:2,g:50},CANDY:{candy:100},SPOOKY:{candy:300},NEWYEAR:{skin:29},VIP:{vip:3},HELLO:{g:200},SAKURA:{candy:150},SPACE:{c:5},GOLDEN:{g:50,candy:50},UPDATE:{c:10,g:100,candy:100}};
+
+function defS(){return {money:0,total:0,own:{},gems:0,skins:{0:1},skin:0,mute:false,daily:{last:"",streak:0},promos:{},xp:0,lvl:1,vipUntil:0,candy:0,boostUntil:0,clicks:0,cases:0,ach:{},art:{},golden:0,last:0}}
+var S=defS(),KEY="rabbit_save",USER="";
+function hash(t){var h=5381;for(var i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return String(h)}
+function users(){try{return JSON.parse(localStorage.getItem("rabbit_users")||"{}")}catch(e){return {}}}
+function loadSave(){var m=S.mute;S=defS();S.mute=m;
+  try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&typeof p.money==="number")S=Object.assign(S,p);}}catch(e){}
+  if(!S.own)S.own={};if(!S.daily)S.daily={last:"",streak:0};if(!S.skins)S.skins={0:1};if(!S.promos)S.promos={};if(!S.ach)S.ach={};if(!S.art)S.art={};S.skins[0]=1;if(!SK[S.skin]||SK[S.skin].off)S.skin=0;if(S.xp===undefined||!isFinite(S.xp))S.xp=levels()*30;S.lvl=lvlInfo().L;}
+try{var cu=localStorage.getItem("rabbit_cur");if(cu&&users()["u_"+cu]){USER=cu;KEY="rabbit_save_"+cu}}catch(e){}
+try{loadSave()}catch(e){S=defS()}
+function save(){S.last=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function $(i){return document.getElementById(i)}
+function fmt(n){n=Math.floor(n);if(n<1e4)return n.toLocaleString("ru-RU");var s=["","K","M","B","T","Qa","Qi","Sx"],i=0,x=n;while(x>=1000&&i<s.length-1){x/=1000;i++}return x.toFixed(x<100?2:1)+s[i];}
+
+/* ---- sound ---- */
+var AC=null;
+function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(AC&&AC.state==="suspended")AC.resume();return AC;}
+function tone(f1,f2,d,type,vol,delay){
+  if(S.mute)return;var a=ac();if(!a)return;
+  var t=a.currentTime+(delay||0),o=a.createOscillator(),g=a.createGain();
+  o.type=type;o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(Math.max(f2,20),t+d);
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+  o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+0.02);
+}
+function sClick(){tone(480+Math.random()*220,260,.06,"triangle",.14)}
+function sBuy(){tone(600,900,.1,"square",.06);tone(900,1300,.14,"square",.07,.09)}
+function sFail(){tone(220,110,.16,"sawtooth",.07)}
+function sTick(){tone(1000,700,.03,"square",.04)}
+function sCash(){[0,.08,.16].forEach(function(d,i){tone(900+i*300,1200+i*300,.12,"sine",.12,d)})}
+function sFan(r){var n=r>=3?[523,659,784,1047,1319]:[523,659,784,1047];n.forEach(function(f,i){tone(f,f*1.01,.22,"triangle",.14,i*.1)})}
+function sRabbit(){ /* писк кролика: два быстрых чирика + мягкий "хрум" */
+  tone(1300,2400,.09,"sine",.22,0);tone(1700,2900,.1,"sine",.2,.12);
+  tone(900,1500,.07,"triangle",.1,0);tone(260,130,.1,"sawtooth",.05,.26);
+}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(function(){e.classList.remove("on")},2200)}
+
+/* ---- game ---- */
+function cnt(id){return S.own[id]||0}
+function cost(u){return Math.floor(u.b*Math.pow(u.m,cnt(u.id))*(hasA("disc")?.9:1))}
+function hasA(id){return !!(S.art&&S.art[id])}
+function amul(id){return (hasA(id)?2:1)*(hasA("mega")?1.5:1)}
+function boost(){return (S.boostUntil||0)>Date.now()?2:1}
+function mult(){return 1+RAR[SK[S.skin].r].b+(vipOn()?.25:0)}
+function need(L){return Math.round(40*Math.pow(L,1.5))}
+function lvlInfo(){var L=1,x=S.xp||0;while(x>=need(L)&&L<999){x-=need(L);L++}return {L:L,x:x,n:need(L)}}
+function addXp(n){S.xp=(S.xp||0)+n*(hasA("clover")?1.25:1);var i=lvlInfo(),from=S.lvl||1;
+  if(i.L>from){for(var L=from+1;L<=i.L;L++){var c=unit()*Math.ceil(L/2),g=L%5===0?10+L:0;S.money+=c;S.gems+=g;toast("⭐ Уровень "+L+"! +"+fmt(c)+" 🥕"+(g?" +"+g+" 🥬":""))}S.lvl=i.L;sFan(1)}}
+function cpc(){var r=1;CLICK.forEach(function(u){r+=u.v*cnt(u.id)});return Math.round(r*mult()*boost()*amul("claw"))}
+function cps(){var r=0;AUTO.forEach(function(u){r+=u.v*cnt(u.id)});return r*mult()*boost()*amul("foot")}
+function levels(){var t=0;CLICK.concat(AUTO).forEach(function(u){t+=cnt(u.id)});return t}
+var els={};
+function build(list,box){
+  list.forEach(function(u){
+    var b=document.createElement("button");b.className="up";
+    b.innerHTML='<span class="ic">'+u.ic+'</span><span class="tx"><b>'+u.n+'</b><small></small></span><span class="pr"></span>';
+    b.onclick=function(){buy(u)};$(box).appendChild(b);els[u.id]=b;
+  });
+}
+function buy(u){var c=cost(u);if(S.money>=c){S.money-=c;S.own[u.id]=cnt(u.id)+1;addXp(12);sBuy();render();save();}else sFail();}
+function isPhoto(k){return k.img!==undefined||k.e==="🐰"||k.e==="🐇"}
+function imgIx(k,r){return k.img!==undefined?k.img:r}
+function rankOf(){var l=lvlInfo().L,r=RANKS[0];RANKS.forEach(function(x){if(l>=x[0])r=x});return r}
+var faceKey="";
+function setFace(force){
+  var k=SK[S.skin],r=rankOf(),ph=isPhoto(k),key=S.skin+"|"+(ph?imgIx(k,r[2]):"e");
+  if(key===faceKey&&!force)return;faceKey=key;
+  var f=$("face");f.style.filter=k.f||"";f.className="face "+(k.c||"");
+  f.innerHTML=(ph&&IMG[imgIx(k,r[2])])?'<img src="'+IMG[imgIx(k,r[2])]+'" alt="">':k.e;
+}
+function applySkin(){
+  var k=SK[S.skin];setFace(true);
+  $("bonus").textContent="Скин «"+k.n+"» ("+RAR[k.r].n+"): +"+Math.round(RAR[k.r].b*100)+"% к доходу"+(vipOn()?" · 👑 VIP +25%":"");
+}
+function render(){
+  $("money").textContent=fmt(S.money);$("gems").textContent=fmt(S.gems);$("candy").textContent=fmt(S.candy||0);
+  var bs=(S.boostUntil||0)-Date.now();$("boost").textContent=bs>0?"🎃 Тыквенный буст ×2: "+Math.floor(bs/60000)+":"+("0"+Math.floor(bs/1000%60)).slice(-2):"";
+  $("cpc").textContent=fmt(cpc());$("cps").textContent=fmt(cps());
+  CLICK.concat(AUTO).forEach(function(u){
+    var b=els[u.id],c=cost(u),isC=u.id[0]==="c";
+    b.querySelector("small").textContent=(isC?"+"+fmt(u.v)+" за клик":"+"+fmt(u.v)+"/сек")+" · куплено: "+cnt(u.id);
+    b.querySelector(".pr").textContent="🥕 "+fmt(c);
+    var ok=S.money>=c;b.classList.toggle("can",ok);b.classList.toggle("no",!ok);
+  });
+  var li=lvlInfo(),l=li.L,r=RANKS[0];RANKS.forEach(function(x){if(l>=x[0])r=x});
+  setFace();
+  $("title").textContent=r[1]+" · Ур. "+l+" · "+fmt(li.x)+"/"+fmt(li.n)+" XP";
+  $("barfill").style.width=Math.min(100,li.x/li.n*100)+"%";
+}
+build(CLICK,"clickUps");build(AUTO,"autoUps");
+var rb=$("rabbit"),stage=$("stage");
+rb.addEventListener("click",function(e){
+  ac();var v=cpc();S.money+=v;S.total+=v;addXp(1);S.clicks=(S.clicks||0)+1;sClick();
+  rb.classList.add("pop");setTimeout(function(){rb.classList.remove("pop")},80);
+  var f=document.createElement("div");f.className="float";f.textContent="+"+fmt(v);
+  var r=stage.getBoundingClientRect(),x=(e.clientX?e.clientX-r.left:r.width/2)+(Math.random()*40-20),y=(e.clientY?e.clientY-r.top:r.height/2)-20;
+  f.style.left=x+"px";f.style.top=y+"px";stage.appendChild(f);setTimeout(function(){f.remove()},900);
+  render();
+});
+setInterval(function(){var g=cps()/10;if(g>0){S.money+=g;S.total+=g;addXp(.04);render();}},100);
+setInterval(save,5000);document.addEventListener("visibilitychange",function(){if(document.hidden)save();else offline()});
+
+/* ---- shop ---- */
+function unit(){return Math.max(1000,Math.round(cps()*600+cpc()*300))}
+function tagHTML(t){return t?'<span class="tag">'+t+'</span>':''}
+function mkBtn(id,ic,small,pr){var b=document.createElement("button");b.className="up";if(id)b.id=id;
+  b.innerHTML='<span class="ic">'+ic+'</span><span class="tx"><b></b><small>'+small+'</small></span><span class="pr">'+pr+'</span>';return b}
+function vipOn(){return (S.vipUntil||0)>Date.now()}
+function addVip(d){S.vipUntil=Math.max(Date.now(),S.vipUntil||0)+d*864e5}
+function rubFmt(n){return n.toLocaleString("ru-RU")+" ₽"}
+function pr(r){return rubFmt(vipOn()?Math.round(r*.9):r)}
+function buildShop(){
+  PACKS.forEach(function(p){
+    var b=mkBtn("","🥬","Оплата картой (понарошку)","");b.classList.add("pack");b.dataset.rub=p.rub;
+    b.querySelector("b").innerHTML=fmt(p.g)+" капусты"+tagHTML(p.t);
+    b.onclick=function(){openPay({name:fmt(p.g)+" 🥬",price:pr(p.rub),give:function(){S.gems+=p.g}})};
+    $("packs").appendChild(b);
+  });
+  XCH.forEach(function(x,i){
+    var b=mkBtn("x"+i,"🥕","Обмен капусты на морковь","🥬 "+x.g);
+    b.onclick=function(){if(S.gems<x.g){sFail();toast("Не хватает 🥬");return}
+      S.gems-=x.g;var a=unit()*x.k;S.money+=a;sBuy();toast("+"+fmt(a)+" 🥕");render();renderShop();save();};
+    $("xch").appendChild(b);
+  });
+  CP.forEach(function(x,i){
+    var b=mkBtn("cp"+i,"🧺","Оплата картой (понарошку)","");b.classList.add("pack");b.dataset.rub=x.rub;
+    b.onclick=function(){openPay({name:fmt(unit()*x.k)+" 🥕",price:pr(x.rub),give:function(){S.money+=unit()*x.k}})};
+    $("cpacks").appendChild(b);
+  });
+  CASES.forEach(function(c,i){
+    var ch=c.w.map(function(w,k){return w?RAR[k].n.slice(0,3)+" "+w+"%":""}).filter(Boolean).join(" · ");
+    var b=mkBtn("case"+i,c.ic,ch+(c.d?" · "+c.d:""),"🥬 "+fmt(c.p));
+    b.querySelector("b").textContent=c.n;b.onclick=function(){openCase(c)};$("cases").appendChild(b);
+  });
+}
+function updPrices(){var v=vipOn();document.querySelectorAll("[data-rub]").forEach(function(b){var r=+b.dataset.rub;
+  b.querySelector(".pr").innerHTML=v?"<s>"+rubFmt(r)+"</s> "+rubFmt(Math.round(r*.9)):rubFmt(r);
+  if(b._p)b.querySelector("small").textContent=packDesc(b._p)})}
+function updVip(){$("vipnote").textContent=vipOn()?"👑 VIP активен до "+new Date(S.vipUntil).toLocaleDateString("ru-RU")+": +25% к доходу, −10% на донат":"VIP не активен: +25% к доходу и −10% на цены доната"}
+function updCarrots(){
+  XCH.forEach(function(x,i){var b=$("x"+i);b.querySelector("b").textContent=fmt(unit()*x.k)+" морковки";var ok=S.gems>=x.g;b.classList.toggle("can",ok);b.classList.toggle("no",!ok)});
+  CP.forEach(function(x,i){$("cp"+i).querySelector("b").innerHTML=fmt(unit()*x.k)+" морковки"+tagHTML(x.t)});
+}
+function renderShop(){updArt();updCarrots();updPrices();updVip();updCandy();
+  CASES.forEach(function(c,i){var ok=S.gems>=c.p,b=$("case"+i);b.classList.toggle("can",ok);b.classList.toggle("no",!ok)});
+  var inv=$("inv");inv.innerHTML="";var n=0;
+  SK.slice().sort(function(a,b){return b.r-a.r||a.id-b.id}).forEach(function(s){if(s.off)return;
+    var d=document.createElement("div"),has=S.skins[s.id];if(has)n++;
+    d.className="sk r"+s.r+(has?"":" lock")+(S.skin===s.id?" eq":"");
+    d.innerHTML=skinHTML(s)+'<small>'+s.n+'</small><small>'+RAR[s.r].n+'</small>';
+    d.onclick=function(){openSkin(s)};
+    inv.appendChild(d);
+  });
+  $("colc").textContent="("+n+"/"+SK.filter(function(k){return !k.off}).length+")";
+}
+function skinHTML(s){return '<span class="face '+(s.c||"")+'" style="filter:'+(s.f||"none")+'">'+(isPhoto(s)&&IMG[imgIx(s,0)]?'<img class="th" src="'+IMG[imgIx(s,0)]+'" alt="">':s.e)+'</span>'}
+var busy=false,last=null;
+function pick(c){
+  var t=c.w.reduce(function(a,b){return a+b},0),x=Math.random()*t,r=0;
+  for(var i=0;i<c.w.length;i++){x-=c.w[i];if(x<0){r=i;break}}
+  var pool=SK.filter(function(s){return s.r===r&&!s.pr&&!s.off&&(c.t?s.t===c.t:!s.ex)});if(!pool.length)pool=SK.filter(function(s){return s.r===r&&!s.pr&&!s.ex&&!s.off});return pool[Math.floor(Math.random()*pool.length)];
+}
+function openCase(c,free){
+  if(busy)return;ac();
+  if(!free&&S.gems<c.p){sFail();toast("Не хватает 🥬 — загляни в донат 😄");return}
+  busy=true;if(!free)S.gems-=c.p;addXp(25);S.cases=(S.cases||0)+1;render();save();
+  var win=pick(c),W=34,D=4500,items=[];
+  for(var i=0;i<42;i++)items.push(i===W?win:pick(c));
+  var st=$("strip");st.style.transition="none";st.style.transform="translateX(0)";
+  st.innerHTML=items.map(function(s){return '<div class="it" style="border-color:var(--r'+s.r+')">'+skinHTML(s)+'<small>'+s.n+'</small></div>'}).join("");
+  $("roll").style.display="";$("res").style.display="none";$("mbtns").style.display="none";$("rollTxt").textContent="Открываем "+c.n.toLowerCase()+"…";
+  $("modal").style.display="flex";
+  var ww=st.parentNode.offsetWidth,tgt=W*96+48-ww/2+(Math.random()*60-30);
+  void st.offsetWidth;
+  st.style.transition="transform "+D+"ms cubic-bezier(.12,.7,.12,1)";st.style.transform="translateX(-"+tgt+"px)";
+  for(var k=1;k<=28;k++)(function(k){setTimeout(sTick,D*(1-Math.pow(1-k/28,.5)))})(k);
+  setTimeout(function(){reveal(win)},D+300);
+}
+function confetti(r){var em=r>=3?["✨","🌟","💫","🥕"]:["🎉","✨","🥕","🥬"],cx=innerWidth/2,cy=innerHeight/2;
+  for(var i=0;i<28;i++){var e=document.createElement("span");e.className="cf";e.textContent=em[i%em.length];e.style.left=cx+"px";e.style.top=cy+"px";
+    e.style.setProperty("--dx",(Math.random()*380-190)+"px");e.style.setProperty("--dy",(Math.random()*-340+70)+"px");document.body.appendChild(e);setTimeout(function(x){x.remove()},1300,e)}}
+function reveal(s){
+  var isNew=!S.skins[s.id];last=s;
+  $("roll").style.display="none";$("res").style.display="";$("mbtns").style.display="flex";
+  var r=RAR[s.r],txt;
+  if(isNew){S.skins[s.id]=1;txt='<b style="color:var(--r'+s.r+')">Новый скин!</b><br>'+s.n+' · '+r.n+'<br><small>Бонус +'+Math.round(r.b*100)+'% к доходу</small>';$("mEq").style.display=""}
+  else{S.gems+=r.back;txt='<b>Дубликат</b><br>'+s.n+' · '+r.n+'<br><small>Возврат +'+r.back+' 🥬</small>';$("mEq").style.display="none"}
+  if(isNew){var th=TH.filter(function(x){return x[2]===s.id})[0];if(th)txt+='<br><small>🎨 Открыта тема «'+th[1]+'»</small>'}
+  $("res").innerHTML='<div class="big">'+skinHTML(s)+'</div>'+txt;
+  sRabbit();if(s.r>=2)setTimeout(function(){sFan(s.r)},350);if(s.r>=2&&isNew)confetti(s.r);
+  render();renderShop();save();busy=false;
+}
+$("mEq").onclick=function(){if(last){S.skin=last.id;applySkin();sRabbit();renderShop();save();}$("modal").style.display="none"};
+$("mClose").onclick=function(){if(!busy)$("modal").style.display="none"};
+
+/* ---- ui ---- */
+function tab(n){[1,2,3].forEach(function(i){$("pg"+i).style.display=i===n?"":"none";$("t"+i).classList.toggle("on",i===n)});if(n===2)renderShop();if(n===3){renderDaily();renderAch()}}
+$("t1").onclick=function(){ac();tab(1)};$("t2").onclick=function(){ac();tab(2)};$("t3").onclick=function(){ac();tab(3)};
+$("mute").onclick=function(){S.mute=!S.mute;$("mute").textContent=S.mute?"🔇":"🔊";if(!S.mute){ac();sRabbit()}save()};
+function updReset(){var ok=S.money>=5e8&&S.gems>=500;$("reset").style.opacity=ok?"1":".5";$("rnote").textContent=ok?"Доступно: нажми для сброса":"Нужно: 🥕 "+fmt(S.money)+" / 500M · 🥬 "+fmt(S.gems)+" / 500"}
+$("reset").onclick=function(){
+  if(S.money<5e8||S.gems<500){sFail();toast("Для сброса нужно 🥕 500 000 000 и 🥬 500");return}
+  var rb2=$("reset"),lbl="Сбросить прогресс (🥕 500M + 🥬 500)";
+  if(!rb2.dataset.arm){rb2.dataset.arm="1";rb2.textContent="⚠️ Нажми ещё раз: всё будет стёрто";setTimeout(function(){delete rb2.dataset.arm;rb2.textContent=lbl},5000);return}
+  delete rb2.dataset.arm;rb2.textContent=lbl;
+  var m=S.mute,vu=S.vipUntil,pm=S.promos,ach0=S.ach,keep={},sk=SK[S.skin].r===4?S.skin:0;
+  Object.keys(S.skins).forEach(function(id){if(SK[id]&&SK[id].r===4)keep[id]=1});
+  var artK={};ART.forEach(function(a){if(a.g&&S.art&&S.art[a.id])artK[a.id]=1});
+  S=defS();S.mute=m;S.vipUntil=vu;S.promos=pm;S.ach=ach0||{};S.art=artK;S.skins=Object.assign({0:1},keep);S.skin=sk;save();refreshAll();toast("Прогресс сброшен. Эксклюзивы и VIP сохранены");
+};
+/* ---- оплата картой (понарошку) ---- */
+var payPack=null;
+function openPay(it){ac();payPack=it;$("payTitle").textContent=it.name+" за "+it.price;$("payBtn").textContent="Оплатить "+it.price;["cn","ce","cc","cname"].forEach(function(i){$(i).value=""});$("cprev").textContent="•••• •••• •••• ••••";$("payBtn").disabled=false;$("pay").style.display="flex";}
+function closePay(){$("pay").style.display="none";["cn","ce","cc","cname"].forEach(function(i){$(i).value=""});}
+$("cn").oninput=function(){var v=this.value.replace(/\D/g,"").slice(0,16);this.value=v.replace(/(.{4})/g,"$1 ").trim();var m=(v+"################").slice(0,16).replace(/\d/g,"•").replace(/#/g,"•");$("cprev").textContent=m.replace(/(.{4})/g,"$1 ").trim();};
+$("ce").oninput=function(){var v=this.value.replace(/\D/g,"").slice(0,4);this.value=v.length>2?v.slice(0,2)+"/"+v.slice(2):v;};
+$("cc").oninput=function(){this.value=this.value.replace(/\D/g,"").slice(0,3)};
+$("payFill").onclick=function(){$("cn").value="4242 4242 4242 4242";$("ce").value="12/34";$("cc").value="123";$("cname").value="BUNNY RABBITOV";$("cprev").textContent="4242 4242 4242 4242";};
+$("payCancel").onclick=closePay;
+$("payBtn").onclick=function(){
+  var n=$("cn").value.replace(/\D/g,"");
+  if(n.length<16||!/^\d\d\/\d\d$/.test($("ce").value)||$("cc").value.length<3||!$("cname").value.trim()){sFail();toast("Заполни все поля (любые выдуманные данные)");return}
+  var p=payPack,last4=n.slice(-4);$("payBtn").disabled=true;toast("Связываемся с кроличьим банком…");
+  setTimeout(function(){p.give();closePay();sCash();toast("✅ "+p.name+" · карта •••• "+last4+" · реально списано 0 ₽");render();renderShop();save();},1300);
+};
+
+/* ---- ежедневные награды ---- */
+var DAILY=[{c:1},{g:15},{c:2},{g:30},{c:3},{g:60},{c:5,g:150}];
+function dstr(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function dcur(){
+  var t=new Date(),y=new Date();y.setDate(y.getDate()-1);var D=S.daily,ts=dstr(t);
+  if(D.last===ts)return {can:false,idx:(D.streak-1)%7,ns:D.streak};
+  var ns=D.last===dstr(y)?D.streak+1:1;return {can:true,idx:(ns-1)%7,ns:ns};
+}
+function dreward(d){return {c:d.c?Math.round((500+cps()*60)*d.c):0,g:d.g||0}}
+function updBadge(){$("dot").textContent=(dcur().can||achReady())?" ●":""}
+function renderDaily(){
+  var c=dcur(),box=$("days");box.innerHTML="";
+  DAILY.forEach(function(d,i){
+    var r=dreward(d),el=document.createElement("div"),done=c.can?i<c.idx:i<=c.idx,now=c.can&&i===c.idx;
+    el.className="day"+(done?" done":"")+(now?" now":"")+(i===6?" big":"");
+    el.innerHTML="<small>День "+(i+1)+"</small>"+(r.c?"🥕 "+fmt(r.c)+"<br>":"")+(r.g?"🥬 "+r.g:"")+(done?"<small>✔ получено</small>":"");
+    box.appendChild(el);
+  });
+  $("claim").disabled=!c.can;
+  $("claim").textContent=c.can?"Забрать награду (день "+(c.idx+1)+")":"Награда получена ✔";
+  $("dnote").textContent=c.can?"Серия: "+(c.ns>1?c.ns-1:0)+" дн.":"Серия: "+c.ns+" дн. Следующая награда завтра.";
+}
+$("claim").onclick=function(){
+  var c=dcur();if(!c.can)return;ac();var r=dreward(DAILY[c.idx]);
+  S.money+=r.c;S.total+=r.c;S.gems+=r.g;S.daily={last:dstr(new Date()),streak:c.ns};
+  sCash();sRabbit();if(c.idx===6)setTimeout(function(){sFan(3)},300);
+  toast("🎉 Награда: "+(r.c?"🥕 "+fmt(r.c)+" ":"")+(r.g?"🥬 "+r.g:""));
+  render();renderDaily();renderShop();save();
+};
+
+/* ---- аккаунты ---- */
+function refreshAll(){$("uname").textContent=(vipOn()?"👑 ":"👤 ")+(USER||"Гость");$("admbtn").style.display=USER==="Niki"?"":"none";$("mute").textContent=S.mute?"🔇":"🔊";applyTheme();applySkin();render();renderShop();renderDaily();}
+function openAcc(){ac();$("astat").textContent=USER?"Ты вошёл как «"+USER+"»":"Сейчас ты играешь как гость";$("an").value="";$("ap").value="";$("accm").style.display="flex";}
+function setUser(n){save();USER=n;KEY=n?"rabbit_save_"+n:"rabbit_save";try{if(n)localStorage.setItem("rabbit_cur",n);else localStorage.removeItem("rabbit_cur")}catch(e){}loadSave();refreshAll();offline();}
+$("uname").onclick=openAcc;$("aClose").onclick=function(){$("accm").style.display="none"};
+$("aGuest").onclick=function(){setUser("");$("accm").style.display="none";toast("Режим гостя")};
+$("aIn").onclick=function(){var n=$("an").value.trim(),u=users()["u_"+n];
+  if(!u||u.h!==hash($("ap").value)){sFail();toast("Неверный ник или пароль");return}
+  setUser(n);$("accm").style.display="none";sRabbit();toast("С возвращением, "+n+"!")};
+$("aReg").onclick=function(){var n=$("an").value.trim(),pw=$("ap").value,U=users();
+  if(n.length<3||pw.length<3){sFail();toast("Ник и пароль: минимум 3 символа");return}
+  if(U["u_"+n]){sFail();toast("Такой ник уже занят");return}
+  U["u_"+n]={h:hash(pw)};try{localStorage.setItem("rabbit_users",JSON.stringify(U))}catch(e){}
+  USER=n;KEY="rabbit_save_"+n;try{localStorage.setItem("rabbit_cur",n)}catch(e){}save();refreshAll();
+  $("accm").style.display="none";sCash();toast("Аккаунт создан, текущий прогресс перенесён")};
+/* ---- промокоды ---- */
+$("pbtn").onclick=function(){
+  var c=$("pin").value.trim().toUpperCase(),P=PROMOS[c];if(!c)return;ac();
+  if(!P||!PROMOS.hasOwnProperty(c)){sFail();toast("Нет такого промокода");return}
+  if(S.promos[c]){sFail();toast("Ты уже активировал этот код");return}
+  S.promos[c]=1;var t=[];
+  if(P.c){var a=unit()*P.c;S.money+=a;t.push("🥕 "+fmt(a))}
+  if(P.g){S.gems+=P.g;t.push("🥬 "+P.g)}
+  if(P.candy){S.candy=(S.candy||0)+P.candy;t.push("🍬 "+P.candy)}
+  if(P.vip){addVip(P.vip);t.push("VIP "+P.vip+" дн.")}
+  if(P.skin!==undefined){var k=SK[P.skin];if(S.skins[k.id]){S.gems+=RAR[k.r].back;t.push("дубликат, 🥬 "+RAR[k.r].back)}else{S.skins[k.id]=1;t.push("скин «"+k.n+"»")}sRabbit()}
+  sCash();$("pin").value="";toast("🎟️ Промокод принят: "+t.join(", "));render();renderShop();save();
+};
+/* ---- паки, VIP, тема ---- */
+var HPACKS=[
+ {n:"Тыквенный пак",ic:"🎃",rub:599,g:400,c:5,candy:150},
+ {n:"Вампирский пак",ic:"🧛",rub:1990,g:1500,c:20,sk:[31],candy:500,t:"ХИТ"}
+];
+var TPACKS=[
+ {n:"Мини-техно пак",ic:"🔌",rub:590,g:800,c:10,sk:[39]},
+ {n:"Техно-пак",ic:"💻",rub:1490,g:3000,c:50,sk:[38,39],vip:7,t:"НОВИНКА"}
+];
+function packGive(p){S.candy=(S.candy||0)+(p.candy||0);S.gems+=p.g;S.money+=unit()*p.c;(p.sk||[]).forEach(function(id){var k=SK[id];if(S.skins[id])S.gems+=RAR[k.r].back;else S.skins[id]=1});if(p.vip)addVip(p.vip);sRabbit();}
+function packDesc(p){return fmt(p.g)+" 🥬 + "+fmt(unit()*p.c)+" 🥕"+(p.candy?" + "+p.candy+" 🍬":"")+(p.sk&&p.sk.length?" + скины: "+p.sk.map(function(i){return SK[i].n}).join(", "):"")+(p.vip?" + VIP "+p.vip+" дн.":"")}
+function addPacks(list,box){list.forEach(function(p){var b=mkBtn("",p.ic,"","");b.classList.add("pack");b.dataset.rub=p.rub;b._p=p;
+  b.querySelector("b").innerHTML=p.n+tagHTML(p.t);b.onclick=function(){openPay({name:p.n,price:pr(p.rub),give:function(){packGive(p)}})};$(box).appendChild(b)})}
+/* ---- музыка (синтез, без файлов) ---- */
+var SC={
+ h:{s:[523,587,659,784,880,1047],bpm:124,w:"triangle",len:1.6,p:.75,bass:[131,196,220,175],bw:"sine",v:.07},
+ c:{s:[294,330,370,440,494,587,659,740],bpm:76,w:"sine",len:4,p:.4,bass:[147,110,123,98],bw:"sine",v:.08,echo:1},
+ s:{s:[220,247,262,330,349,415,440],bpm:80,w:"triangle",len:3,p:.35,bass:[55,55,58,52],bw:"sine",v:.07,bell:880},
+ p:{s:[262,330,392,494,587,784,988,1175],bpm:64,w:"sine",len:4,p:.5,bass:[65,98,73,87],bw:"sine",v:.07,echo:1},
+ y:{s:[220,262,330,440,523,659,880],bpm:132,w:"square",len:.9,p:.85,bass:[55,55,65,49],bw:"sawtooth",v:.03}
+};
+SC.k={bpm:172,v:.07,bell:1319,bass:[110,82,87,82],fifth:[165,123,131,123],
+ pat:[880,0,659,698,659,0,523,0, 494,0,587,659,587,0,415,0, 698,0,659,587,659,0,523,0, 415,494,587,659,0,880,0,0]};
+var MU={on:true,mood:"h",step:0,idx:2,next:0,timer:null,gain:null};
+try{MU.on=localStorage.getItem("rabbit_music")!=="0"}catch(e){}
+function mnote(f,d,type,v,t){var a=ac();if(!a)return;if(!MU.gain){MU.gain=a.createGain();MU.gain.gain.value=.9;MU.gain.connect(a.destination)}
+  var o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g);g.connect(MU.gain);o.start(t);o.stop(t+d+.05)}
+function mStep(t,b){var c=SC[MU.mood]||SC.h,i=MU.step++;
+  if(c.pat){kStep(c,t,b,i);return}
+  if(i%8===0)mnote(c.bass[(i/8|0)%c.bass.length],b*7.5,c.bw,c.v*1.3,t);
+  if(Math.random()<c.p){MU.idx=Math.max(0,Math.min(c.s.length-1,MU.idx+Math.floor(Math.random()*5)-2));var f=c.s[MU.idx];mnote(f,b*c.len,c.w,c.v,t);if(c.echo)mnote(f,b*c.len,c.w,c.v*.4,t+b*1.5)}
+  if(c.bell&&i%16===12&&Math.random()<.5)mnote(c.bell,b*6,"sine",c.v*.9,t)}
+function kStep(c,t,b,i){var n=i%32,ph=(n/8)|0,f=c.pat[n];
+  if(n%2===0)mnote(c.bass[ph],b*1.6,"triangle",c.v*1.5,t);else mnote(c.fifth[ph],b*.9,"square",c.v*.5,t);
+  if(f){mnote(f,b*.9,"triangle",c.v*1.4,t);mnote(f*3,b*.4,"sine",c.v*.35,t)}
+  if(n%4===0)mnote(1800,.03,"square",c.v*.5,t);
+  if(n===31&&Math.random()<.6)mnote(c.bell,b*6,"sine",c.v,t)}
+function mTick(){var a=ac();if(!a||!MU.on)return;var c=SC[MU.mood]||SC.h,b=60/c.bpm/2;if(MU.next<a.currentTime)MU.next=a.currentTime+.05;while(MU.next<a.currentTime+.6){mStep(MU.next,b);MU.next+=b}}
+function mStart(){if(MU.timer||!MU.on)return;MU.next=0;MU.timer=setInterval(mTick,200)}
+function mStop(){clearInterval(MU.timer);MU.timer=null}
+$("music").onclick=function(){MU.on=!MU.on;try{localStorage.setItem("rabbit_music",MU.on?"1":"0")}catch(e){}$("music").textContent=MU.on?"🎵":"🔈";if(MU.on){ac();mStart()}else mStop()};
+$("music").textContent=MU.on?"🎵":"🔈";
+document.addEventListener("pointerdown",function(){if(MU.on){ac();mStart()}});
+document.addEventListener("visibilitychange",function(){if(document.hidden)mStop();else if(MU.on)mStart()});
+/* ---- темы: каждая открывается своим скином ---- */
+var TH=[
+["classic","Классика",0,0,"","","","","","","h"],
+["mist","Туман",1,0,"#eef0f3","#cfd6e0","#6b7a90","#9aa8bd","#25303d","☁️","c"],
+["ocean","Океан",2,0,"#e6f3ff","#a9d8fb","#1d7fe0","#5cb8ff","#10304f","🫧 🐟","c"],
+["mint","Мята",3,0,"#e9fbf1","#b4ecd0","#16a860","#5fdc9b","#123b27","🍃","c"],
+["sakura","Сакура",4,0,"#fff0f5","#ffc3da","#e8588c","#ff9ec0","#4a1d30","🌸 🌸 🌸","c"],
+["gold","Золото",5,1,"#1d1606","#4d3a08","#f0b429","#ffd966","#fff3cf","✨ 🪙","h"],
+["ninja","Ночь ниндзя",6,1,"#0e0e12","#2c1218","#e23b3b","#ff7a7a","#f2e8e8","🌙 ⭐","y"],
+["rainbow","Радуга",7,0,"#fff8fb","#e3d4ff","#a855f7","#ff7ab8","#2b1a44","🌈 ⭐","h"],
+["cemetery","Кладбище",8,1,"#0d1210","#22352c","#7fb59a","#b8e0cf","#e1efe8","🪦 🦇 👻 🕯️","s"],
+["cyber","Кибер",9,1,"#070b14","#0b3045","#12d6e8","#7af0ff","#d9f9ff","⚡","y"],
+["forest","Лес",12,0,"#eaf5e4","#bde0a8","#3f8f2f","#86c96f","#1d3317","🍂 🌲","c"],
+["sunset","Закат",13,0,"#fff1e3","#ffbe85","#f2622b","#ffa05c","#4a2012","☀️","h"],
+["choco","Шоколад",14,1,"#1c110c","#40261a","#c68345","#e8b27c","#f6e4d3","🍫","h"],
+["lemon","Лимон",15,0,"#fffbe0","#fff08a","#d9ad00","#ffe14d","#473b00","🍋","h"],
+["ice","Лёд",19,0,"#eaf8ff","#b5e6ff","#31a7d8","#8fdcff","#0f3447","❄️","c"],
+["alien","Пришелец",22,1,"#08140a","#134520","#5be34a","#b6ff6b","#e4ffd9","👽","p"],
+["fire","Огонь",23,1,"#1d0a05","#5e1c08","#ff5a1f","#ffb03a","#ffe6d3","🔥","y"],
+["ufo","НЛО",24,1,"#0a0720","#221a5a","#8b5cf6","#7dffb0","#ece8ff","🛸 ✨","p"],
+["winter","Зима",29,0,"#eaf1fb","#c9dcf5","#d33b3b","#5aa8e8","#1c2e4a","❄️ 🎄","c"],
+["halloween","Хэллоуин",31,1,"#12071d","#4a1d70","#ff7a1a","#ffae45","#f7eaff","🦇 🎃 👻 🕸️","k"],
+["swamp","Болото",34,1,"#0b1409","#2c3d16","#9acd32","#cde86a","#e6f0cf","🍄 🦠","k"],
+["witch","Зелье",36,1,"#140a22","#3d1b62","#a855f7","#4ade80","#f0e6ff","🧪 🔮","k"],
+["matrix","Матрица",38,1,"#020a04","#05290e","#19d44b","#8dff9f","#c9ffd4","0 1 1 0","y"],
+["neon","Неон",39,1,"#0a0614","#3d0b4d","#ff2bd6","#22e5ff","#ffe6fb","💜 💙","y"],
+["space","Космос",40,1,"#050816","#161e55","#5b8cff","#ffd166","#e8eeff","⭐ 🪐 🌙","p"]
+];
+function curTheme(){var v="classic";try{v=localStorage.getItem("rabbit_theme")||"classic"}catch(e){}
+  var t=TH.filter(function(x){return x[0]===v})[0];if(!t||!S.skins[t[2]])t=TH[0];return t}
+function buildDeco(str){var d=$("hdeco");d.innerHTML="";if(!str)return;var tk=str.split(" ");
+  for(var i=0;i<9;i++){var e=document.createElement("span");e.textContent=tk[i%tk.length];e.style.left=(i*11+Math.random()*6)+"%";e.style.animationDuration=(11+i%4*3)+"s";e.style.animationDelay="-"+(i*1.7)+"s";d.appendChild(e)}}
+function applyTheme(){var t=curTheme(),r=document.documentElement,st=r.style;
+  ["--bg","--acc","--acc2","--ink","--card","--line","--mut","--glow","--bgx"].forEach(function(k){st.removeProperty(k)});
+  if(t[0]!=="classic"){var b=t[4];
+    st.setProperty("--bg",b);st.setProperty("--ink",t[8]);st.setProperty("--acc",t[6]);st.setProperty("--acc2",t[7]);
+    st.setProperty("--card",t[3]?"color-mix(in srgb,"+b+" 84%,#fff)":"color-mix(in srgb,"+b+" 35%,#fff)");
+    st.setProperty("--line","color-mix(in srgb,"+t[8]+" 18%,"+b+")");st.setProperty("--mut","color-mix(in srgb,"+t[8]+" 62%,"+b+")");
+    st.setProperty("--glow","color-mix(in srgb,"+t[6]+" 55%,transparent)");st.setProperty("--bgx","radial-gradient(ellipse at top,"+t[5]+" 0,transparent 68%)")}
+  buildDeco(t[9]);r.setAttribute("data-d",t[9]?"1":"0");MU.mood=t[10]}
+$("theme").onclick=function(){ac();var g=$("thgrid");g.innerHTML="";var cur=curTheme()[0];
+  TH.forEach(function(t){var own=!!S.skins[t[2]],d=document.createElement("div");d.className="tc"+(own?"":" lk")+(t[0]===cur?" on":"");
+    d.innerHTML='<i style="background:'+(t[0]==="classic"?"linear-gradient(135deg,#fff4e2,#ffb03a)":"linear-gradient(135deg,"+t[4]+","+t[5]+" 55%,"+t[6]+")")+'"></i>'+t[1]+(own?"":"<br>🔒 "+SK[t[2]].n);
+    if(own)d.onclick=function(){try{localStorage.setItem("rabbit_theme",t[0])}catch(e){}applyTheme();$("thm").style.display="none";sBuy();toast("🎨 Тема «"+t[1]+"»")};
+    g.appendChild(d)});$("thm").style.display="flex"};
+$("thx").onclick=function(){$("thm").style.display="none"};
+/* ---- достижения ---- */
+var MOOD={h:"весёлая",c:"спокойная",s:"жуткая",p:"космическая",y:"кибер",k:"быстрая «скелетная»"};
+function casePool(c,r){var p=SK.filter(function(x){return x.r===r&&!x.pr&&!x.off&&(c.t?x.t===c.t:!x.ex)});
+  if(!p.length)p=SK.filter(function(x){return x.r===r&&!x.pr&&!x.ex&&!x.off});return p}
+function skinSrc(k){var L=[];if(k.id===0)return ["Есть у всех с самого начала"];
+  CASES.forEach(function(c){var w=c.w[k.r];if(!w)return;var p=casePool(c,k.r);if(p.indexOf(k)<0)return;
+    var tot=c.w.reduce(function(a,b){return a+b},0);L.push("📦 "+c.n+": ≈"+(w/tot*100/p.length).toFixed(1)+"%")});
+  CSHOP.forEach(function(it){if(it.sk===k.id)L.push("🍬 Конфетная лавка: "+it.p+" 🍬")});
+  HPACKS.concat(TPACKS).forEach(function(p){if(p.sk&&p.sk.indexOf(k.id)>=0)L.push("💳 "+p.n)});
+  if(k.pr)L.push("🎟️ Только по промокоду");
+  return L.length?L:["Сейчас недоступен"]}
+function openSkin(k){
+  var own=!!S.skins[k.id],th=TH.filter(function(x){return x[2]===k.id})[0],R=RAR[k.r],eq=S.skin===k.id,curTh=curTheme()[0];
+  $("skbig").innerHTML=skinHTML(k);$("skn").textContent=k.n;
+  var h='<div class="ir"><span>Статус</span><b>'+(own?(eq?"✔ Надет":"✔ Есть"):"🔒 Не получен")+'</b></div>'
+   +'<div class="ir"><span>Редкость</span><b style="color:var(--r'+k.r+')">'+R.n+'</b></div>'
+   +'<div class="ir"><span>Бонус к доходу</span><b>'+(R.b?"+"+Math.round(R.b*100)+"%":"нет")+'</b></div>';
+  if(th){var sw=th[0]==="classic"?"linear-gradient(135deg,#fff4e2,#ffb03a)":"linear-gradient(135deg,"+th[4]+","+th[5]+" 55%,"+th[6]+")";
+    h+='<div class="ir"><span>Открывает тему</span><b><i class="sw" style="background:'+sw+'"></i>'+th[1]+'<br><small>'+MOOD[th[10]]+' музыка</small></b></div>'}
+  h+='<div class="ir"><span>Где получить</span><b>'+skinSrc(k).join("<br>")+'</b></div>';
+  $("skinfo").innerHTML=h;
+  var b=$("skbtns");b.innerHTML="";
+  function add(t,fn,g){var x=document.createElement("button");x.textContent=t;if(g)x.className="g";x.onclick=fn;b.appendChild(x)}
+  if(own&&!eq)add("Надеть",function(){S.skin=k.id;applySkin();sRabbit();render();renderShop();save();openSkin(k)});
+  if(own&&th&&th[0]!==curTh)add("Применить тему",function(){try{localStorage.setItem("rabbit_theme",th[0])}catch(e){}applyTheme();sBuy();toast("🎨 Тема «"+th[1]+"»");openSkin(k)});
+  add("Закрыть",function(){$("skm").style.display="none"},1);
+  $("skm").style.display="flex"}
+function nSkins(){return Object.keys(S.skins).filter(function(k){return SK[k]&&!SK[k].off}).length}
+var ACH=[
+ {id:"k1",ic:"👆",n:"Первый клик",f:function(){return S.clicks||0},to:1,r:{g:5}},
+ {id:"k2",ic:"👆",n:"100 кликов",f:function(){return S.clicks||0},to:100,r:{candy:10}},
+ {id:"k3",ic:"💥",n:"1000 кликов",f:function(){return S.clicks||0},to:1000,r:{g:30}},
+ {id:"k4",ic:"🔥",n:"10 000 кликов",f:function(){return S.clicks||0},to:10000,r:{g:100}},
+ {id:"u1",ic:"🛒",n:"10 улучшений",f:levels,to:10,r:{candy:20}},
+ {id:"u2",ic:"🏭",n:"50 улучшений",f:levels,to:50,r:{g:60}},
+ {id:"l1",ic:"⭐",n:"Уровень 10",f:function(){return lvlInfo().L},to:10,r:{g:40}},
+ {id:"l2",ic:"🌟",n:"Уровень 25",f:function(){return lvlInfo().L},to:25,r:{g:120,candy:50}},
+ {id:"s1",ic:"🎽",n:"5 скинов",f:nSkins,to:5,r:{g:50}},
+ {id:"s2",ic:"👑",n:"15 скинов",f:nSkins,to:15,r:{g:200}},
+ {id:"c1",ic:"📦",n:"Открой 10 кейсов",f:function(){return S.cases||0},to:10,r:{candy:40}},
+ {id:"m1",ic:"🥕",n:"Заработать 1M моркови",f:function(){return S.total||0},to:1e6,r:{g:50}},
+ {id:"m2",ic:"💰",n:"Заработать 1B моркови",f:function(){return S.total||0},to:1e9,r:{g:300}},
+ {id:"d1",ic:"📅",n:"Серия 7 дней",f:function(){return S.daily.streak||0},to:7,r:{g:80,candy:30}},
+ {id:"g1",ic:"✨",n:"Золотая морковка",f:function(){return S.golden||0},to:1,r:{g:10}},
+ {id:"g2",ic:"✨",n:"10 золотых морковок",f:function(){return S.golden||0},to:10,r:{g:40,candy:20}},
+ {id:"g3",ic:"🌟",n:"50 золотых морковок",f:function(){return S.golden||0},to:50,r:{g:150}},
+ {id:"a1",ic:"🧿",n:"3 артефакта",f:nArt,to:3,r:{g:80}},
+ {id:"a2",ic:"🔱",n:"Все артефакты",f:nArt,to:8,r:{g:300,candy:100}},
+ {id:"l3",ic:"🏅",n:"Уровень 50",f:function(){return lvlInfo().L},to:50,r:{g:250,candy:100}},
+ {id:"l4",ic:"🎖️",n:"Уровень 100",f:function(){return lvlInfo().L},to:100,r:{g:600}},
+ {id:"s3",ic:"🦄",n:"Все скины",f:nSkins,to:25,r:{g:500}},
+ {id:"c2",ic:"📦",n:"Открой 100 кейсов",f:function(){return S.cases||0},to:100,r:{g:150,candy:100}},
+ {id:"m3",ic:"💸",n:"Заработать 1T моркови",f:function(){return S.total||0},to:1e12,r:{g:600}},
+ {id:"d2",ic:"🗓️",n:"Серия 30 дней",f:function(){return S.daily.streak||0},to:30,r:{g:500}},
+ {id:"t1",ic:"🎨",n:"Открой 10 тем",f:function(){return TH.filter(function(t){return S.skins[t[2]]}).length},to:10,r:{g:100}}
+];
+/* ---- артефакты, золотая морковка, оффлайн-доход ---- */
+var ART=[
+ {id:"claw",ic:"🪝",n:"Золотой коготь",d:"×2 за клик",c:5e6},
+ {id:"foot",ic:"🍀",n:"Кроличья лапка",d:"×2 доход в секунду",c:2e7},
+ {id:"disc",ic:"🏷️",n:"Скидка торговца",d:"улучшения дешевле на 10%",c:5e7},
+ {id:"clock",ic:"⏰",n:"Будильник",d:"оффлайн-доход ×2 и до 8 часов",c:1e8},
+ {id:"mega",ic:"🚀",n:"Мега-ускоритель",d:"×1.5 ко всему доходу",c:5e9},
+ {id:"clover",ic:"📘",n:"Книга знаний",d:"+25% опыта",g:100},
+ {id:"magnet",ic:"🧲",n:"Морковный магнит",d:"золотая морковка появляется чаще",g:150},
+ {id:"gift",ic:"🎁",n:"Щедрая лапа",d:"золотая морковка даёт вдвое больше",g:250}
+];
+function nArt(){return Object.keys(S.art||{}).length}
+(function(){ART.forEach(function(a,i){var b=mkBtn("ar"+i,a.ic,a.d,a.g?"🥬 "+a.g:"🥕 "+fmt(a.c));b.querySelector("b").textContent=a.n;
+  b.onclick=function(){if(hasA(a.id))return;
+    if(a.g){if(S.gems<a.g){sFail();toast("Не хватает 🥬");return}S.gems-=a.g}else{if(S.money<a.c){sFail();toast("Не хватает 🥕");return}S.money-=a.c}
+    S.art[a.id]=1;sBuy();sFan(1);addXp(30);toast("🧿 «"+a.n+"»: "+a.d);render();save()};
+  $("arts").appendChild(b)})})();
+function updArt(){ART.forEach(function(a,i){var b=$("ar"+i),own=hasA(a.id),ok=!own&&(a.g?S.gems>=a.g:S.money>=a.c);
+  b.querySelector(".pr").textContent=own?"✔ Есть":(a.g?"🥬 "+a.g:"🥕 "+fmt(a.c));b.classList.toggle("can",ok);b.classList.toggle("no",!ok)})}
+var GD={t:0};
+function gSchedule(){var m=hasA("magnet")?30:60;GD.t=Date.now()+(m+Math.random()*m)*1000}
+function gSpawn(force){var st=$("stage");if(!force&&document.querySelector(".gold"))return;var b=document.createElement("button");b.className="gold";b.textContent="🥕";
+  b.style.left=(8+Math.random()*72)+"%";b.style.top=(4+Math.random()*58)+"%";
+  b.onclick=function(e){e.stopPropagation();b.remove();gReward()};st.appendChild(b);setTimeout(function(){b.remove()},9000)}
+function gReward(){var x=Math.random(),m=hasA("gift")?2:1,t;S.golden=(S.golden||0)+1;
+  if(x<.62){var a=Math.max(unit(),cps()*90+cpc()*40)*m;S.money+=a;S.total+=a;t="+"+fmt(a)+" 🥕"}
+  else if(x<.78){var g=Math.round((3+Math.random()*8)*m);S.gems+=g;t="+"+g+" 🥬"}
+  else if(x<.9){var c=Math.round((5+Math.random()*15)*m);S.candy=(S.candy||0)+c;t="+"+c+" 🍬"}
+  else{S.boostUntil=Math.max(Date.now(),S.boostUntil||0)+60000*m;t="буст ×2 на "+m+" мин"}
+  sCash();sRabbit();toast("✨ Золотая морковка! "+t);render();save()}
+setInterval(function(){if(document.hidden)return;if(!GD.t)gSchedule();
+  if(Date.now()>=GD.t){gSchedule();if($("pg1").style.display!=="none")gSpawn()}},1000);
+function offline(){var now=Date.now(),d=(now-(S.last||now))/1000;S.last=now;var c=cps();if(d<90||c<=0)return;
+  var cap=hasA("clock")?28800:7200,rt=hasA("clock")?1:.5,g=c*Math.min(d,cap)*rt;S.money+=g;S.total+=g;
+  toast("😴 Тебя не было "+Math.round(Math.min(d,cap)/60)+" мин: +"+fmt(g)+" 🥕");render();save()}
+function achReady(){return ACH.some(function(a){return !S.ach[a.id]&&a.f()>=a.to})}
+function rtext(r){return (r.g?"🥬 "+r.g+" ":"")+(r.candy?"🍬 "+r.candy:"")}
+function renderAch(){var box=$("achs");box.innerHTML="";
+  ACH.forEach(function(a){var v=a.f(),done=v>=a.to,got=S.ach[a.id];
+    var b=mkBtn("",a.ic,fmt(Math.min(v,a.to))+" / "+fmt(a.to)+" · "+rtext(a.r),got?"✔":(done?"Забрать":"…"));b.querySelector("b").textContent=a.n;
+    b.classList.add(got?"no":(done?"can":"no"));
+    b.onclick=function(){if(S.ach[a.id]||a.f()<a.to){sFail();return}S.ach[a.id]=1;S.gems+=a.r.g||0;S.candy=(S.candy||0)+(a.r.candy||0);sCash();toast("🏆 "+a.n+": "+rtext(a.r));render();renderAch();save()};
+    box.appendChild(b)})}
+/* ---- конфеты ---- */
+var CCASES=[
+ {n:"Конфетный кейс",ic:"🍭",p:60,t:[[60,5,15],[30,16,35],[9,36,80],[1,150,200]]},
+ {n:"Большой конфетный",ic:"🍫",p:200,t:[[55,30,70],[30,71,140],[12,141,300],[3,400,600]]},
+ {n:"Тыквенный джекпот",ic:"🎃",p:600,t:[[50,120,300],[32,301,600],[15,601,1200],[3,2000,3000]]}
+];
+var CPACKS=[{k:50,rub:99},{k:300,rub:449},{k:1000,rub:1290,t:"ХИТ"},{k:3000,rub:2990,t:"ВЫГОДНО"}];
+var CSHOP=[
+ {sk:34,p:400},{sk:36,p:400},
+ {ic:"🎃",n:"Тыквенный буст ×2",d:"10 минут двойного дохода",p:80,boost:600},
+ {ic:"🥕",n:"Мешок моркови",d:"Много моркови сразу",p:60,carrots:3},
+ {ic:"🥬",n:"Кочан капусты",d:"+30 капусты",p:100,gems:30},
+ {ic:"👻",n:"Хэллоуин-кейс",d:"Бесплатное открытие кейса со скинами",p:250,hcase:1},
+ {ic:"🧪",n:"Зелье опыта",d:"+500 XP",p:90,xp:500},
+ {ic:"⏳",n:"Буст ×2 на час",d:"Двойной доход 60 минут",p:400,boost:3600},
+ {ic:"🧺",n:"Корзина моркови",d:"Огромная куча моркови",p:300,carrots:15},
+ {ic:"✨",n:"Золотая морковка",d:"Появится на главном экране",p:120,gold:1}
+];
+function buildCandy(){
+  CCASES.forEach(function(c,i){var b=mkBtn("cc"+i,c.ic,"Выпадает от "+c.t[0][1]+" до "+c.t[3][2]+" 🍬","🥬 "+fmt(c.p));b.querySelector("b").textContent=c.n;b.onclick=function(){openCandy(c)};$("ccases").appendChild(b)});
+  CPACKS.forEach(function(x){var b=mkBtn("","🍬","Оплата картой (понарошку)","");b.classList.add("pack");b.dataset.rub=x.rub;b.querySelector("b").innerHTML=fmt(x.k)+" конфет"+tagHTML(x.t);
+    b.onclick=function(){openPay({name:fmt(x.k)+" 🍬",price:pr(x.rub),give:function(){S.candy=(S.candy||0)+x.k}})};$("cpacksc").appendChild(b)});
+  CSHOP.forEach(function(it,i){var k=it.sk!==undefined?SK[it.sk]:null;
+    var b=mkBtn("cs"+i,k?k.e:it.ic,k?RAR[k.r].n+" скин · +"+Math.round(RAR[k.r].b*100)+"% к доходу":it.d,"🍬 "+it.p);
+    b.querySelector("b").textContent=k?"Скин «"+k.n+"»":it.n;b.onclick=function(){buyCandy(it)};$("clavka").appendChild(b)});
+}
+function updCandy(){
+  CCASES.forEach(function(c,i){var b=$("cc"+i),ok=S.gems>=c.p;b.classList.toggle("can",ok);b.classList.toggle("no",!ok)});
+  CSHOP.forEach(function(it,i){var b=$("cs"+i),own=it.sk!==undefined&&S.skins[it.sk],ok=!own&&(S.candy||0)>=it.p;
+    b.querySelector(".pr").textContent=own?"✔ Есть":"🍬 "+fmt(it.p);b.classList.toggle("can",ok);b.classList.toggle("no",!ok)});
+}
+function buyCandy(it){
+  if((S.candy||0)<it.p){sFail();toast("Не хватает 🍬");return}
+  if(it.sk!==undefined&&S.skins[it.sk]){sFail();toast("Этот скин уже есть");return}
+  S.candy-=it.p;sBuy();addXp(10);
+  if(it.sk!==undefined){S.skins[it.sk]=1;sRabbit();toast("Скин «"+SK[it.sk].n+"» куплен")}
+  else if(it.boost){S.boostUntil=Math.max(Date.now(),S.boostUntil||0)+it.boost*1000;toast("🎃 Двойной доход на 10 минут!")}
+  else if(it.carrots){var a=unit()*it.carrots;S.money+=a;toast("+"+fmt(a)+" 🥕")}
+  else if(it.gems){S.gems+=it.gems;toast("+"+it.gems+" 🥬")}
+  else if(it.xp){addXp(it.xp);toast("+"+it.xp+" XP")}
+  else if(it.gold){gSpawn(true);toast("✨ Золотая морковка на главном экране!")}
+  else if(it.hcase){var hc=CASES.filter(function(c){return c.t==="h"})[0];render();renderShop();save();openCase(hc,true);return}
+  render();renderShop();save();
+}
+function openCandy(c){
+  if(busy)return;ac();
+  if(S.gems<c.p){sFail();toast("Не хватает 🥬 — загляни в донат 😄");return}
+  busy=true;S.gems-=c.p;addXp(15);S.cases=(S.cases||0)+1;render();save();
+  var tot=c.t.reduce(function(a,t){return a+t[0]},0),x=Math.random()*tot,tier=0;
+  for(var i=0;i<c.t.length;i++){x-=c.t[i][0];if(x<0){tier=i;break}}
+  var t=c.t[tier],amt=t[1]+Math.floor(Math.random()*(t[2]-t[1]+1));
+  $("roll").style.display="none";$("mbtns").style.display="none";$("res").style.display="";
+  $("res").innerHTML='<div class="big shake">'+c.ic+'</div><b>Открываем…</b>';$("modal").style.display="flex";
+  for(var k=0;k<6;k++)(function(k){setTimeout(sTick,k*140)})(k);
+  setTimeout(function(){S.candy=(S.candy||0)+amt;
+    $("res").innerHTML='<div class="big">🍬</div><b style="color:var(--r'+tier+')">+'+fmt(amt)+' конфет!</b><br><small>'+c.n+'</small>';
+    $("mEq").style.display="none";$("mbtns").style.display="flex";sCash();if(tier>=2){sFan(tier);confetti(tier)}
+    render();renderShop();save();busy=false},1000);
+}
+buildShop();addPacks(HPACKS,"hpacks");addPacks(TPACKS,"tpacks");buildCandy();
+(function(){var b=mkBtn("","👑","30 дней: +25% к доходу и −10% на донат","");b.classList.add("pack");b.dataset.rub=299;
+  b.querySelector("b").textContent="VIP на 30 дней";b.onclick=function(){openPay({name:"VIP на 30 дней",price:pr(299),give:function(){addVip(30)}})};$("vip").appendChild(b)})();
+/* ---- админ-панель (только Niki) ---- */
+function num(v){v=String(v).replace(/[\s,]/g,"").toUpperCase();var m=v.match(/^(\d+(?:\.\d+)?(?:E\d+)?)([KMBT]?)$/);if(!m)return NaN;return parseFloat(m[1])*({"":1,K:1e3,M:1e6,B:1e9,T:1e12}[m[2]])}
+function isAdmin(){return USER==="Niki"}
+function opt(v,t){var o=document.createElement("option");o.value=v;o.textContent=t;return o}
+$("admbtn").onclick=function(){if(!isAdmin())return;ac();
+  var a=$("admS"),p=$("admP"),k=$("admK");a.innerHTML="";p.innerHTML="";k.innerHTML="";
+  SK.slice().sort(function(m,n){return n.r-m.r||m.id-n.id}).forEach(function(x){if(x.off)return;a.appendChild(opt(x.id,x.id+" · "+x.n+" ("+RAR[x.r].n+")"))});
+  p.appendChild(opt("","Себе ("+USER+")"));p.appendChild(opt("__guest","Гость"));
+  Object.keys(users()).forEach(function(n){n=n.slice(2);if(n!==USER)p.appendChild(opt(n,n))});
+  CASES.forEach(function(c,i){k.appendChild(opt(i,c.n))});$("adm").style.display="flex"};
+$("admX").onclick=function(){$("adm").style.display="none"};
+$("admC").onclick=function(){if(!isAdmin())return;var n=num($("admN").value);if(!(n>=0)){sFail();toast("Неверное число");return}S.money+=n;sCash();toast("+"+fmt(n)+" 🥕");render();save()};
+$("admY").onclick=function(){if(!isAdmin())return;var n=num($("admN").value);if(!(n>=0)){sFail();toast("Неверное число");return}S.candy=(S.candy||0)+n;sCash();toast("+"+fmt(n)+" 🍬");render();renderShop();save()};
+$("admG").onclick=function(){if(!isAdmin())return;var n=num($("admN").value);if(!(n>=0)){sFail();toast("Неверное число");return}S.gems+=n;sCash();toast("+"+fmt(n)+" 🥬");render();renderShop();save()};
+$("admSk").onclick=function(){if(!isAdmin())return;var id=+$("admS").value,who=$("admP").value;
+  if(!who){S.skins[id]=1;sRabbit();renderShop();save();toast("Скин «"+SK[id].n+"» выдан себе");return}
+  var key=who==="__guest"?"rabbit_save":"rabbit_save_"+who;
+  try{var d=JSON.parse(localStorage.getItem(key)||"null");if(!d){sFail();toast("У игрока нет сохранения");return}
+    d.skins=d.skins||{0:1};d.skins[id]=1;localStorage.setItem(key,JSON.stringify(d));sRabbit();toast("Скин «"+SK[id].n+"» выдан: "+(who==="__guest"?"Гость":who))}catch(e){sFail();toast("Ошибка")}};
+$("admO").onclick=function(){if(!isAdmin())return;$("adm").style.display="none";openCase(CASES[+$("admK").value],true)};
+applyTheme();refreshAll();offline();
+window.__ok=1;
+</script>
+<script>if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){})})}</script>
+</body>
+</html>
