@@ -2,61 +2,37 @@ name: Make icons
 on: [push, workflow_dispatch]
 permissions:
   contents: write
-
 jobs:
   icons:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Draw icons
         run: |
           pip install pillow
           python3 - <<'PY'
+          import re, base64, io, glob
           from PIL import Image, ImageDraw
-          import os
-
-          BG = (255, 138, 61)       # оранжевый фон
-          CIRCLE = (255, 170, 100)  # светлый круг
-
-          # Берём source.png, если он есть.
-          # Если нет — используем уже существующую иконку как основу.
-          if os.path.exists('source.png'):
-              src = Image.open('source.png').convert('RGBA')
-          elif os.path.exists('icon-512.png'):
-              src = Image.open('icon-512.png').convert('RGBA')
-          else:
-              raise SystemExit("Нет source.png и нет icon-512.png")
-
-          # Обрезаем прозрачные края
-          bbox = src.split()[3].getbbox()
-          if bbox:
-              src = src.crop(bbox)
-
+          IDX = 14
+          BG = (255, 138, 61)
+          CIRCLE = (255, 170, 100)
+          s = ''.join(open(f, encoding='utf-8').read() for f in sorted(glob.glob('images*.js')))
+          imgs = re.findall(r'data:image/webp;base64,([A-Za-z0-9+/=]+)', s)
+          print('found images:', len(imgs))
+          src = Image.open(io.BytesIO(base64.b64decode(imgs[IDX]))).convert('RGBA')
+          src = src.crop(src.split()[3].getbbox())
           def icon(n, scale):
               im = Image.new('RGBA', (n, n), BG + (255,))
-              ImageDraw.Draw(im).ellipse(
-                  [n * 0.12, n * 0.5, n * 0.88, n * 1.1],
-                  fill=CIRCLE + (255,)
-              )
+              ImageDraw.Draw(im).ellipse([n*.12, n*.5, n*.88, n*1.1], fill=CIRCLE + (255,))
               k = n * scale / max(src.size)
-              r = src.resize(
-                  (int(src.width * k), int(src.height * k)),
-                  Image.LANCZOS
-              )
-              im.alpha_composite(
-                  r,
-                  ((n - r.width) // 2, (n - r.height) // 2 + int(n * 0.03))
-              )
+              r = src.resize((int(src.width*k), int(src.height*k)), Image.LANCZOS)
+              im.alpha_composite(r, ((n - r.width)//2, (n - r.height)//2 + int(n*.03)))
               return im.convert('RGB')
-
-          icon(192, 0.78).save('icon-192.png')
-          icon(512, 0.78).save('icon-512.png')
-          icon(512, 0.56).save('icon-maskable-512.png')
-          print("Icons generated successfully")
+          icon(192, .78).save('icon-192.png')
+          icon(512, .78).save('icon-512.png')
+          icon(512, .56).save('icon-maskable-512.png')
           PY
           ls -la *.png
-
       - name: Commit icons
         run: |
           git config user.name github-actions
