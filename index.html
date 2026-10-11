@@ -2,6 +2,17 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
+<script>
+window.__errs=[];window.onerror=function(m,u,l){window.__errs.push(m+" (строка "+l+")")};
+window.addEventListener("load",function(){if(window.__ok)return;var d=document.createElement("div");
+d.style.cssText="position:fixed;left:8px;right:8px;top:8px;z-index:99;background:#7f1d1d;color:#fff;padding:12px;border-radius:12px;font:14px system-ui,sans-serif";
+d.textContent="⚠️ Игра не запустилась. "+(window.__errs.length?"Ошибка: "+window.__errs.join("; "):"Файл index.html на GitHub загружен не полностью (нет конца скрипта). Загрузи его заново.");
+document.body.appendChild(d)});
+</script>
+<script src="images1.js"></script>
+<script src="images2.js"></script>
+<script src="images3.js"></script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Кроличий кликер</title>
 <link rel="manifest" href="manifest.json">
@@ -199,13 +210,4 @@ h2::before{content:"";width:5px;height:1.1em;border-radius:4px;background:linear
 </div></div>
 <div id="accm"><div class="box pay" style="text-align:left">
   <h3 style="margin:0 0 4px">👤 Аккаунт</h3>
-  <div class="note" id="astat"></div>
-  <div class="note">Аккаунты хранятся только в этом браузере, не на сервере. Не используй настоящий пароль.</div>
-  <label>Ник</label><input id="an" maxlength="16" autocomplete="off">
-  <label>Пароль</label><input id="ap" type="password" maxlength="32" autocomplete="off">
-  <div class="btns"><button id="aIn">Войти</button><button id="aReg">Создать</button></div>
-  <div class="btns" style="margin-top:6px"><button class="g" id="aGuest">Играть гостем</button><button class="g" id="aClose">Закрыть</button></div>
-</div></div>
-<div id="adm"><div class="box pay" style="text-align:left">
-  <h3 style="margin:0 0 4px">🛠 Админ-панель</h3>
-  <label>Количество (например 100000
+  <div
