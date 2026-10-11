@@ -1,21 +1,25 @@
-const CACHE_NAME = "rabbit-clicker-v1";
+const CACHE_NAME = "rabbit-clicker-v2";
 
 const APP_FILES = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon-maskable-512.png"
+  "/",
+  "/index.html",
+  "/manifest.json",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/icon-maskable-512.png"
 ];
 
+// Установка Service Worker и кеширование ресурсов
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_FILES))
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(APP_FILES);
+    })
   );
   self.skipWaiting();
 });
 
+// Активация и очистка старого кеша
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -29,19 +33,34 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+// Перехват сетевых запросов (Cache-First с фоновым обновлением)
 self.addEventListener("fetch", (event) => {
   const request = event.request;
-  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
+  
+  // Пропускаем не-GET запросы и сторонние домены
+  if (request.method !== "GET") return;
 
   event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request).then((response) => {
-        if (response.ok && response.type === "basic") {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+    caches.match(request).then((cachedResponse) => {
+      if (cachedResponse) {
+        // Возвращаем из кеша, но обновляем кеш в фоновом режиме
+        fetch(request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200 && networkResponse.type === "basic") {
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, networkResponse));
+          }
+        }).catch(() => {/* Игнорируем ошибки сети при фоновом обновлении */});
+
+        return cachedResponse;
+      }
+
+      // Если в кеше нет, берем из сети
+      return fetch(request).then((networkResponse) => {
+        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== "basic") {
+          return networkResponse;
         }
-        return response;
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, responseToCache));
+        return networkResponse;
       });
     })
   );
