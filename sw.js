@@ -1,4 +1,4 @@
-var C="rabbit-v15",F=["./","./index.html","./manifest.json","./icon-192.png","./icon-512.png","./images1.js","./images2.js","./images3.js"];
+var C="rabbit-v17",F=["./","./index.html","./manifest.json","./icon-192.png","./icon-512.png","./images1.js","./images2.js","./images3.js","./images4.js"];
 self.addEventListener("install",function(e){
   e.waitUntil(caches.open(C).then(function(c){return Promise.all(F.map(function(u){return c.add(u).catch(function(){})}))}));
   self.skipWaiting();
