@@ -12,25 +12,47 @@ jobs:
           pip install pillow
           python3 - <<'PY'
           import re, base64, io, glob
-          from PIL import Image, ImageDraw
+          from PIL import Image, ImageDraw, ImageChops, ImageFilter
           IDX = 14
-          BG = (255, 138, 61)
-          CIRCLE = (255, 170, 100)
+          BG = (23, 18, 13)
+          GLOW = (255, 176, 58)
           s = ''.join(open(f, encoding='utf-8').read() for f in sorted(glob.glob('images*.js')))
           imgs = re.findall(r'data:image/webp;base64,([A-Za-z0-9+/=]+)', s)
           print('found images:', len(imgs))
           src = Image.open(io.BytesIO(base64.b64decode(imgs[IDX]))).convert('RGBA')
           src = src.crop(src.split()[3].getbbox())
-          def icon(n, scale):
-              im = Image.new('RGBA', (n, n), BG + (255,))
-              ImageDraw.Draw(im).ellipse([n*.12, n*.5, n*.88, n*1.1], fill=CIRCLE + (255,))
+
+          def background(n):
+              m = n * 2
+              rg = Image.radial_gradient('L').resize((m, m))
+              fade = rg.point(lambda v: int(255 * max(0.0, min(1.0, (0.85 - v / 255) / 0.7))))
+              glow = rg.point(lambda v: int(255 * 0.62 * max(0.0, 1 - v / 255 / 0.85) ** 1.4))
+              rays = Image.new('L', (m, m), 0)
+              d = ImageDraw.Draw(rays)
+              R = m * 1.5
+              for a in range(-90, 270, 22):
+                  d.pieslice([m/2 - R, m/2 - R, m/2 + R, m/2 + R], a, a + 8, fill=255)
+              rays = ImageChops.multiply(rays, fade).point(lambda v: int(v * 0.5))
+              alpha = ImageChops.lighter(glow, rays)
+              layer = Image.new('RGBA', (m, m), GLOW + (0,))
+              layer.putalpha(alpha)
+              base = Image.new('RGBA', (m, m), BG + (255,))
+              base.alpha_composite(layer)
+              return base.resize((n, n), Image.LANCZOS)
+
+          def icon(n, scale, bottom):
+              im = background(n)
+              sh = Image.new('RGBA', (n, n), (0, 0, 0, 0))
+              ImageDraw.Draw(sh).ellipse([n*.22, bottom*n - n*.045, n*.78, bottom*n + n*.05], fill=(0, 0, 0, 120))
+              im.alpha_composite(sh.filter(ImageFilter.GaussianBlur(n * .018)))
               k = n * scale / max(src.size)
-              r = src.resize((int(src.width*k), int(src.height*k)), Image.LANCZOS)
-              im.alpha_composite(r, ((n - r.width)//2, (n - r.height)//2 + int(n*.03)))
+              r = src.resize((int(src.width * k), int(src.height * k)), Image.LANCZOS)
+              im.alpha_composite(r, ((n - r.width) // 2, int(bottom * n - r.height)))
               return im.convert('RGB')
-          icon(192, .78).save('icon-192.png')
-          icon(512, .78).save('icon-512.png')
-          icon(512, .56).save('icon-maskable-512.png')
+
+          icon(192, .74, .84).save('icon-192.png')
+          icon(512, .74, .84).save('icon-512.png')
+          icon(512, .54, .75).save('icon-maskable-512.png')
           PY
           ls -la *.png
       - name: Commit icons
