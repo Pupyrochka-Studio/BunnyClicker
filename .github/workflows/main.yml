@@ -1,0 +1,39 @@
+name: Build BunnyClicker
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+
+      - name: Create index.html
+        run: |
+          if [ -f "BunnyClicker.html" ]; then
+            cp BunnyClicker.html index.html
+          elif [ ! -f "index.html" ]; then
+            echo "ERROR: BunnyClicker.html and index.html are missing"
+            exit 1
+          fi
+
+      - name: Commit index.html
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add index.html
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Create index.html"
+            git push
+          else
+            echo "No changes to upload"
+          fi
